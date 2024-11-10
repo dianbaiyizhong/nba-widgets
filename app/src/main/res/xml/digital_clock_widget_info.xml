@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:description="@string/app_name"
+    android:maxWidth="554dp"
+    android:maxHeight="51dp"
+    android:maxResizeWidth="554dp"
+    android:maxResizeHeight="51dp"
+    android:minWidth="554dp"
+    android:minHeight="51dp"
+    android:minResizeWidth="554dp"
+    android:minResizeHeight="51dp"
+    android:previewImage="@drawable/nba_svg"
+    android:targetCellWidth="4"
+    android:targetCellHeight="1"
+    android:updatePeriodMillis="60000"
+    android:widgetCategory="home_screen">
+
+</appwidget-provider>
