@@ -87,7 +87,8 @@ public class NbaMapWidget extends AppWidgetProvider {
 
         TeamEntity teamEntity = teamEntityList.stream().filter(teamEntity1 -> teamEntity1.getTeamName().equals(teamName)).findFirst().get();
 
-        if (type.equals("2015")) {
+
+        if (type.contains("15")) {
             return teamEntity.getMovie2015FrameSize() * 40;
         } else {
             return teamEntity.getMovie2016FrameSize() * 20;
@@ -130,7 +131,7 @@ public class NbaMapWidget extends AppWidgetProvider {
         if (Objects.equals(intent.getAction(), WidgetNotification.ACTION_AUTO_UPDATE)) {
             if (ScreenUtils.isScreenLock()) {
                 Logger.i("由于当前处在锁屏，忽略步骤");
-                WidgetNotification.setNextOneMin(context,NbaMapWidget.class);
+                WidgetNotification.setNextOneMin(context, NbaMapWidget.class);
                 return;
             }
             doInEveryMin(context);
@@ -154,7 +155,12 @@ public class NbaMapWidget extends AppWidgetProvider {
 
 
     private void changeMovieLayout(Context context, String teamName, int appId) {
-        String movieType = SPStaticUtils.getString(SettingConst.MOVIE_TYPE, "2015");
+        String movieType = SPStaticUtils.getString(SettingConst.MOVIE_TYPE);
+        if (movieType.equals("nba2k15")) {
+            movieType = "2015";
+        } else {
+            movieType = "2016";
+        }
         RemoteViews remoteViews = new RemoteViews(context.getPackageName(), ResourceUtils.getLayoutIdByName("movie_layout_" + movieType + "_" + teamName));
         remoteViews.setOnClickPendingIntent(ResourceUtils.getIdByName("vf_logo_player"), getPendingSelfIntent(context, MOVIE_CLICK, teamName, appId, movieType));
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);

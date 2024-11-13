@@ -7,17 +7,29 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
+import android.view.View;
 import android.widget.RemoteViews;
+import android.widget.Toast;
 
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONArray;
 import com.blankj.utilcode.util.ColorUtils;
 import com.blankj.utilcode.util.ResourceUtils;
+import com.blankj.utilcode.util.SPStaticUtils;
 import com.blankj.utilcode.util.ScreenUtils;
+import com.blankj.utilcode.util.ThreadUtils;
+import com.nntk.nba.widgets.constant.SettingConst;
 import com.nntk.nba.widgets.entity.CurrentInfo;
+import com.nntk.nba.widgets.entity.GameInfo;
 import com.nntk.nba.widgets.entity.TeamEntity;
 import com.orhanobut.logger.Logger;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+import java.io.IOException;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,6 +37,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
+import java.util.function.Predicate;
+
+import okhttp3.Call;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * Implementation of App Widget functionality.
@@ -74,6 +92,80 @@ public class ScoreBoardWidget extends AppWidgetProvider {
 
 
         if (Objects.requireNonNull(intent.getAction()).contains("CLICK")) {
+
+            ThreadUtils.getIoPool().execute(new Runnable() {
+                @Override
+                public void run() {
+                    OkHttpClient client = new OkHttpClient();
+                    Request request = new Request.Builder()
+                            .get()
+                            .url("https://nba.hupu.com/")
+                            .build();
+                    Call call = client.newCall(request);
+                    try {
+                        //同步发送请求
+                        Response response = call.execute();
+                        if (response.isSuccessful()) {
+                            String html = response.body().string();
+
+                            Elements cardTeams = Jsoup.parse(html).select("div.nba-match-container   div.match-card-team");
+                            List<GameInfo> gameInfoList = new ArrayList<>();
+                            for (Element card : cardTeams) {
+                                gameInfoList.add(GameInfo.builder()
+                                        .guestTeam(card.select("span.team-name").get(0).text())
+                                        .homeTeam(card.select("span.team-name").get(1).text())
+                                        .guestRate(card.select("span.team-rate").get(0).text())
+                                        .homeRate(card.select("span.team-rate").get(1).text())
+                                        .build());
+                            }
+                            String loveTeam = SPStaticUtils.getString(SettingConst.LOVE_TEAM);
+                            TeamEntity teamEntity = teamEntityList.stream().filter(new Predicate<TeamEntity>() {
+                                @Override
+                                public boolean test(TeamEntity teamEntity) {
+                                    return teamEntity.getTeamName().contains(loveTeam);
+                                }
+                            }).findFirst().get();
+
+
+                            GameInfo gameInfo = gameInfoList.stream().filter(new Predicate<GameInfo>() {
+                                @Override
+                                public boolean test(GameInfo gameInfo) {
+                                    return gameInfo.getGuestTeam().equals(teamEntity.getTeamNameZh()) || gameInfo.getHomeTeam().equals(teamEntity.getTeamNameZh());
+                                }
+                            }).findFirst().get();
+
+
+                            gameInfo.setGuestTeamEntity(teamEntityList.stream().filter(new Predicate<TeamEntity>() {
+                                @Override
+                                public boolean test(TeamEntity teamEntity) {
+                                    return teamEntity.getTeamNameZh().equals(gameInfo.getGuestTeam());
+                                }
+                            }).findFirst().get());
+
+                            gameInfo.setHomeTeamEntity(teamEntityList.stream().filter(new Predicate<TeamEntity>() {
+                                @Override
+                                public boolean test(TeamEntity teamEntity) {
+                                    return teamEntity.getTeamNameZh().equals(gameInfo.getHomeTeam());
+                                }
+                            }).findFirst().get());
+
+
+                            ThreadUtils.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    changeGameAnimLayout(context, intent.getIntExtra("appId", 0), gameInfo);
+                                }
+                            });
+
+                        } else {
+                            System.out.println("请求失败");
+                        }
+                    } catch (IOException e) {
+                        System.out.println("error");
+                        e.printStackTrace();
+                    }
+                }
+            });
 
 
         }
@@ -128,10 +220,83 @@ public class ScoreBoardWidget extends AppWidgetProvider {
             hourTeamEntity = appMap.get(appId).getCurrentHourTeam();
             remoteViews.setInt(R.id.hour_view, "setBackgroundColor", ColorUtils.string2Int(hourTeamEntity.getScoreBoardColor()));
         }
-        remoteViews.setInt(R.id.min_view, "setBackgroundColor", ColorUtils.string2Int(minTeamEntity.getScoreBoardColor()));
-        remoteViews.setOnClickPendingIntent(ResourceUtils.getIdByName("btn"), getPendingSelfIntent(context, LOGO_CLICK, appId));
+
+        if (minTeamEntity != null) {
+            remoteViews.setInt(R.id.min_view, "setBackgroundColor", ColorUtils.string2Int(minTeamEntity.getScoreBoardColor()));
+            // 记下当前队伍
+            appMap.get(appId).setCurrentMinTeam(minTeamEntity);
+        } else {
+            minTeamEntity = appMap.get(appId).getCurrentMinTeam();
+            remoteViews.setInt(R.id.hour_view, "setBackgroundColor", ColorUtils.string2Int(minTeamEntity.getScoreBoardColor()));
+        }
+
+        remoteViews.setOnClickPendingIntent(ResourceUtils.getIdByName("btn_look_game"), getPendingSelfIntent(context, LOGO_CLICK, appId));
         appWidgetManager.updateAppWidget(appId, remoteViews);
     }
+
+    protected void changeGameAnimLayout(Context context, int appId, GameInfo gameInfo) {
+
+
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+        // 先清除定时器
+        WidgetNotification.clearWidgetUpdate(context, ScoreBoardWidget.class);
+        RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.nba_scoreboard_anim_layout);
+
+//        TeamEntity minEntity = teamEntityList.get(new Random().nextInt(teamEntityList.size()));
+//        TeamEntity hourEntity = teamEntityList.get(new Random().nextInt(teamEntityList.size()));
+
+        TeamEntity minEntity = gameInfo.getHomeTeamEntity();
+        TeamEntity hourEntity = gameInfo.getGuestTeamEntity();
+
+        RemoteViews animViews = new RemoteViews(context.getPackageName(), ResourceUtils.getLayoutIdByName(String.format("espn_anim_layout_%s", minEntity.getTeamName())));
+        remoteViews.addView(R.id.min_view_frame_layout, animViews);
+        RemoteViews animHourViews = new RemoteViews(context.getPackageName(), ResourceUtils.getLayoutIdByName(String.format("espn_anim_layout_%s", hourEntity.getTeamName())));
+        remoteViews.addView(R.id.hour_view_frame_layout, animHourViews);
+
+        appWidgetManager.updateAppWidget(appId, remoteViews);
+
+        new Handler().postDelayed(() -> {
+            changeGameLayout(context, appId, gameInfo);
+        }, 2000);
+
+    }
+
+    protected void changeGameLayout(Context context, int appId, GameInfo gameInfo) {
+
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+        RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.nba_scoreboard_game_layout);
+
+        remoteViews.setImageViewResource(R.id.iv_min_logo, ResourceUtils.getMipmapIdByName("logo_" + gameInfo.getHomeTeamEntity().getTeamName()));
+        remoteViews.setImageViewResource(R.id.iv_hour_logo, ResourceUtils.getMipmapIdByName("logo_" + gameInfo.getGuestTeamEntity().getTeamName()));
+        remoteViews.setViewVisibility(R.id.iv_min_logo, View.VISIBLE);
+        remoteViews.setViewVisibility(R.id.iv_hour_logo, View.VISIBLE);
+
+        remoteViews.setViewVisibility(R.id.tv_hour, View.GONE);
+        remoteViews.setViewVisibility(R.id.tv_min, View.GONE);
+
+        remoteViews.setViewVisibility(R.id.tc_hour, View.GONE);
+        remoteViews.setViewVisibility(R.id.tc_min, View.GONE);
+
+        remoteViews.setViewVisibility(R.id.tv_home_team_rate, View.VISIBLE);
+        remoteViews.setViewVisibility(R.id.tv_guest_team_rate, View.VISIBLE);
+
+        remoteViews.setTextViewText(R.id.tv_home_team_rate, gameInfo.getHomeRate());
+        remoteViews.setTextViewText(R.id.tv_guest_team_rate, gameInfo.getGuestRate());
+
+
+        remoteViews.setInt(R.id.hour_view, "setBackgroundColor", ColorUtils.string2Int(gameInfo.getGuestTeamEntity().getScoreBoardColor()));
+        remoteViews.setInt(R.id.min_view, "setBackgroundColor", ColorUtils.string2Int(gameInfo.getHomeTeamEntity().getScoreBoardColor()));
+
+
+        appWidgetManager.updateAppWidget(appId, remoteViews);
+        // 2秒恢复原状态，并重新开启定时器
+        new Handler().postDelayed(() -> {
+            changeSimpleLayout(context, appId, gameInfo.getHomeTeamEntity(), gameInfo.getGuestTeamEntity());
+            WidgetNotification.scheduleWidgetUpdate(context, ScoreBoardWidget.class);
+
+        }, 5000);
+    }
+
 
     protected PendingIntent getPendingSelfIntent(Context context, String action, int appWidgetId) {
         Intent intent = new Intent(context, getClass());

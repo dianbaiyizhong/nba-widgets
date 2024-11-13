@@ -26,6 +26,10 @@ public class TestActivity extends AppCompatActivity {
                 .build();
         Logger.addLogAdapter(new AndroidLogAdapter(formatStrategy));
         super.onCreate(savedInstanceState);
+        if (SPStaticUtils.getString(SettingConst.MOVIE_TYPE) == null) {
+            SPStaticUtils.put(SettingConst.MOVIE_TYPE,"nba2k15");
+        }
+
         // 布局延伸
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
 
@@ -48,7 +52,7 @@ public class TestActivity extends AppCompatActivity {
 
         ComponentName serviceComponent = new ComponentName(getApplication(), ScoreBoardWidget.class);
         SPStaticUtils.put("teamName", teamName);
-        SPStaticUtils.put("movieType", SPStaticUtils.getString(SettingConst.MOVIE_TYPE, "2015"));
+        SPStaticUtils.put("movieType", SPStaticUtils.getString(SettingConst.MOVIE_TYPE));
 
         AppWidgetManager.getInstance(getApplicationContext())
                 .requestPinAppWidget(serviceComponent, null, null);

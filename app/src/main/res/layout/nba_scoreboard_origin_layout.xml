@@ -29,14 +29,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
-                    android:layout_marginHorizontal="15dp"
                     android:gravity="center">
 
                     <TextView
+                        android:id="@+id/tv_hour"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_alignParentLeft="true"
                         android:layout_centerVertical="true"
+                        android:layout_marginLeft="15dp"
                         android:gravity="center"
                         android:includeFontPadding="false"
                         android:text="HOU"
@@ -44,11 +45,44 @@
                         android:textSize="24sp"
                         android:textStyle="bold" />
 
-                    <TextClock
+                    <ImageView
+                        android:id="@+id/iv_hour_logo"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:gravity="center"
+                        android:scaleType="centerCrop"
+                        android:src="@mipmap/logo_lakers"
+                        android:visibility="gone">
+
+                    </ImageView>
+
+
+                    <TextView
+                        android:id="@+id/tv_guest_team_rate"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
+                        android:layout_marginRight="15dp"
+                        android:gravity="center"
+                        android:includeFontPadding="false"
+                        android:text="127"
+                        android:textColor="#FFFFFF"
+                        android:textSize="24sp"
+                        android:textStyle="bold"
+                        android:visibility="gone">
+
+                    </TextView>
+
+                    <TextClock
+                        android:id="@+id/tc_hour"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="15dp"
                         android:format12Hour="hh"
                         android:gravity="center"
                         android:includeFontPadding="false"
@@ -86,30 +120,60 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:layout_marginHorizontal="15dp">
+                    android:layout_gravity="center">
 
                     <TextView
+                        android:id="@+id/tv_min"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_alignParentLeft="true"
                         android:layout_centerVertical="true"
-                        android:gravity="center"
+                        android:layout_marginLeft="15dp"
 
+                        android:gravity="center"
                         android:includeFontPadding="false"
                         android:text="MIN"
                         android:textColor="#FFFFFF"
                         android:textSize="24sp"
                         android:textStyle="bold" />
 
-                    <TextClock
+                    <ImageView
+                        android:id="@+id/iv_min_logo"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:gravity="center"
+                        android:scaleType="centerCrop"
+                        android:src="@mipmap/logo_warriors"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/tv_home_team_rate"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
+                        android:layout_marginRight="15dp"
+                        android:gravity="center"
+                        android:includeFontPadding="false"
+                        android:text="127"
+                        android:textColor="#FFFFFF"
+                        android:textSize="24sp"
+                        android:textStyle="bold"
+                        android:visibility="gone">
+
+                    </TextView>
+
+                    <TextClock
+                        android:id="@+id/tc_min"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="15dp"
                         android:format12Hour="mm"
                         android:gravity="center"
-
                         android:includeFontPadding="false"
                         android:textColor="#FFFFFF"
                         android:textSize="24sp"
@@ -142,7 +206,6 @@
         android:background="@color/score_board_border_color" />
 
     <LinearLayout
-        android:id="@+id/btn"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="34">
@@ -154,6 +217,7 @@
             android:background="#050505">
 
             <LinearLayout
+                android:id="@+id/btn_look_game"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"

@@ -3,6 +3,7 @@ package com.nntk.nba.widgets;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.os.Bundle;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 
@@ -16,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONArray;
 import com.blankj.utilcode.util.ConvertUtils;
+import com.blankj.utilcode.util.ObjectUtils;
 import com.blankj.utilcode.util.ResourceUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
 import com.nntk.nba.widgets.adapter.NbaLogoAdapter;
@@ -48,6 +50,15 @@ public class MainActivity extends AppCompatActivity {
                 .build();
         Logger.addLogAdapter(new AndroidLogAdapter(formatStrategy));
         super.onCreate(savedInstanceState);
+
+        if (ObjectUtils.isEmpty(SPStaticUtils.getString(SettingConst.MOVIE_TYPE))) {
+            SPStaticUtils.put(SettingConst.MOVIE_TYPE, "nba2k15");
+        }
+        if (ObjectUtils.isEmpty(SPStaticUtils.getString(SettingConst.LOVE_TEAM))) {
+            SPStaticUtils.put(SettingConst.LOVE_TEAM, "rockets");
+        }
+
+
         // 布局延伸
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
 
@@ -58,6 +69,17 @@ public class MainActivity extends AppCompatActivity {
 
 
         preferencesButton = findViewById(R.id.preferences_button);
+
+
+        ImageButton gameWidgetButton = findViewById(R.id.btn_game_widget);
+
+
+        gameWidgetButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                createGameWidget();
+            }
+        });
 
         preferencesButton.setOnClickListener(v -> new PreferencesDialogFragment()
                 .show(getSupportFragmentManager(), ""));
@@ -96,9 +118,9 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void createDeskTopWidget(String teamName) {
-        ComponentName serviceComponent = new ComponentName(getApplication(), ScoreBoardWidget.class);
+        ComponentName serviceComponent = new ComponentName(getApplication(), NbaMapWidget.class);
         SPStaticUtils.put("teamName", teamName);
-        SPStaticUtils.put("movieType", SPStaticUtils.getString(SettingConst.MOVIE_TYPE, "2015"));
+        SPStaticUtils.put("movieType", SPStaticUtils.getString(SettingConst.MOVIE_TYPE));
 
         AppWidgetManager.getInstance(getApplicationContext())
                 .requestPinAppWidget(serviceComponent, null, null);
@@ -111,6 +133,12 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
+    private void createGameWidget() {
+        ComponentName serviceComponent = new ComponentName(getApplication(), ScoreBoardWidget.class);
+        AppWidgetManager.getInstance(getApplicationContext())
+                .requestPinAppWidget(serviceComponent, null, null);
+    }
 
     @Override
     protected void onStop() {

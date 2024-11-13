@@ -29,6 +29,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":module-common"))
 
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

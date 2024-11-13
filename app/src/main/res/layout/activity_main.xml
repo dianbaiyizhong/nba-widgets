@@ -81,6 +81,16 @@
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
+                        <ImageButton
+                            android:id="@+id/btn_game_widget"
+                            style="@style/Widget.Catalog.TocButton"
+                            app:tint="@color/white"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:srcCompat="@drawable/baseline_widgets_24"
+                            tools:ignore="MissingConstraints" />
 
                         <ImageButton
                             android:id="@+id/cat_toc_search_button"
@@ -123,7 +133,6 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:listitem="@layout/item_team_layout" />
-
 
 
     <View

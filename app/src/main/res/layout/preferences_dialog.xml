@@ -52,15 +52,15 @@
                 android:id="@+id/radio_group"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:checkedButton="@+id/nba2k16">
+                android:checkedButton="@+id/nba2k15">
 
                 <RadioButton
                     android:id="@+id/nba2k15"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:tag="2015"
                     android:enabled="true"
                     android:paddingStart="8dp"
+                    android:tag="nba2k15"
                     android:text="2K-2015" />
 
                 <RadioButton
@@ -68,12 +68,32 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:checked="false"
-                    android:tag="2016"
                     android:enabled="true"
                     android:paddingStart="8dp"
+                    android:tag="nba2k16"
                     android:text="2K-2016" />
 
             </RadioGroup>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="8dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="关注球队"
+                android:textSize="12sp" />
+
+
+            <Spinner
+                android:id="@+id/sp_team"
+                android:layout_width="match_parent"
+                android:layout_height="48dp" />
 
         </LinearLayout>
     </LinearLayout>
