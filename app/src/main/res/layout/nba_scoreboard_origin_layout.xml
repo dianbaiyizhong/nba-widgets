@@ -198,6 +198,82 @@
         android:layout_weight="21"
         android:background="#191919">
 
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+
+            <LinearLayout
+                android:layout_marginLeft="10dp"
+                android:id="@+id/battery_01"
+                style="@style/blockStyle" />
+
+            <LinearLayout
+                android:id="@+id/battery_02"
+                style="@style/blockStyle" />
+
+            <LinearLayout
+                android:id="@+id/battery_03"
+                style="@style/blockStyle" />
+
+            <LinearLayout
+                android:id="@+id/battery_04"
+                style="@style/blockStyle" />
+
+            <LinearLayout
+                android:id="@+id/battery_05"
+                style="@style/blockStyle" />
+
+            <LinearLayout
+                android:id="@+id/battery_06"
+                style="@style/blockStyle" />
+
+            <LinearLayout
+                android:id="@+id/battery_07"
+                style="@style/blockStyle" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+
+            <LinearLayout
+                android:layout_marginLeft="10dp"
+                android:id="@+id/wifi_01"
+                style="@style/blockStyle" />
+
+            <LinearLayout
+                android:id="@+id/wifi_02"
+                style="@style/blockStyle" />
+
+            <LinearLayout
+                android:id="@+id/wifi_03"
+                style="@style/blockStyle" />
+
+            <LinearLayout
+                android:id="@+id/wifi_04"
+                style="@style/blockStyle" />
+
+            <LinearLayout
+                android:id="@+id/wifi_05"
+                style="@style/blockStyle" />
+
+            <LinearLayout
+                android:id="@+id/wifi_06"
+                style="@style/blockStyle" />
+
+            <LinearLayout
+                android:id="@+id/wifi_07"
+                style="@style/blockStyle" />
+
+        </LinearLayout>
+
     </LinearLayout>
 
     <LinearLayout
@@ -266,6 +342,7 @@
                 android:background="@color/score_board_border_color" />
 
             <LinearLayout
+                android:id="@+id/btn_launch"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1">

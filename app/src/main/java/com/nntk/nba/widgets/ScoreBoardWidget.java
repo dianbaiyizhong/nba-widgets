@@ -11,17 +11,22 @@ import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
+import androidx.core.app.NotificationCompat;
+
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONArray;
+import com.blankj.utilcode.util.AppUtils;
 import com.blankj.utilcode.util.ColorUtils;
 import com.blankj.utilcode.util.ResourceUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
 import com.blankj.utilcode.util.ScreenUtils;
 import com.blankj.utilcode.util.ThreadUtils;
+import com.blankj.utilcode.util.VolumeUtils;
 import com.nntk.nba.widgets.constant.SettingConst;
 import com.nntk.nba.widgets.entity.CurrentInfo;
 import com.nntk.nba.widgets.entity.GameInfo;
 import com.nntk.nba.widgets.entity.TeamEntity;
+import com.nntk.nba.widgets.util.BatteryHelper;
 import com.orhanobut.logger.Logger;
 
 import org.jsoup.Jsoup;
@@ -52,7 +57,29 @@ public class ScoreBoardWidget extends AppWidgetProvider {
     public static final String ACTION_AUTO_UPDATE = "AUTO_UPDATE";
 
 
-    private static List<TeamEntity> teamEntityList = new ArrayList<>();
+    public static final String ACTION_LAUNCH_APP = "ACTION_LAUNCH_APP";
+
+    private static List<TeamEntity> teamEntityListCache = new ArrayList<>();
+
+
+    private static List<TeamEntity> teamEntityList() {
+
+        if (teamEntityListCache.isEmpty()) {
+            String json = ResourceUtils.readRaw2String(R.raw.logo);
+            JSONArray objects = JSON.parseArray(json);
+            for (int i = 0; i < objects.size(); i++) {
+                teamEntityListCache.add(TeamEntity.builder()
+                        .simpleFrameSize(objects.getJSONObject(i).getInteger("simpleFrameSize"))
+                        .teamName(objects.getJSONObject(i).getString("teamName"))
+                        .teamNameZh(objects.getJSONObject(i).getString("teamNameZh"))
+                        .bgColor(objects.getJSONObject(i).getString("bgColor"))
+                        .scoreBoardColor(objects.getJSONObject(i).getString("scoreBoardColor"))
+                        .build());
+            }
+        }
+        return teamEntityListCache;
+
+    }
 
 
     private static Map<Integer, CurrentInfo> appMap = new HashMap<>();
@@ -61,8 +88,8 @@ public class ScoreBoardWidget extends AppWidgetProvider {
     private void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                  int appWidgetId) {
 
-        TeamEntity hourEntity = teamEntityList.get(new Random().nextInt(teamEntityList.size()));
-        TeamEntity minEntity = teamEntityList.get(new Random().nextInt(teamEntityList.size()));
+        TeamEntity hourEntity = teamEntityList().get(new Random().nextInt(teamEntityList().size()));
+        TeamEntity minEntity = teamEntityList().get(new Random().nextInt(teamEntityList().size()));
 
         appMap.put(appWidgetId, CurrentInfo.builder()
                 .currentHourTeam(hourEntity)
@@ -79,6 +106,12 @@ public class ScoreBoardWidget extends AppWidgetProvider {
     public void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent);
         Logger.i("onReceive:%s", intent.getAction());
+
+        if (Objects.equals(intent.getAction(), ACTION_LAUNCH_APP)) {
+
+            AppUtils.launchApp("com.hupu.games");
+            return;
+        }
 
 
         if (Objects.equals(intent.getAction(), ACTION_AUTO_UPDATE)) {
@@ -119,7 +152,7 @@ public class ScoreBoardWidget extends AppWidgetProvider {
                                         .build());
                             }
                             String loveTeam = SPStaticUtils.getString(SettingConst.LOVE_TEAM);
-                            TeamEntity teamEntity = teamEntityList.stream().filter(new Predicate<TeamEntity>() {
+                            TeamEntity teamEntity = teamEntityList().stream().filter(new Predicate<TeamEntity>() {
                                 @Override
                                 public boolean test(TeamEntity teamEntity) {
                                     return teamEntity.getTeamName().contains(loveTeam);
@@ -135,14 +168,14 @@ public class ScoreBoardWidget extends AppWidgetProvider {
                             }).findFirst().get();
 
 
-                            gameInfo.setGuestTeamEntity(teamEntityList.stream().filter(new Predicate<TeamEntity>() {
+                            gameInfo.setGuestTeamEntity(teamEntityList().stream().filter(new Predicate<TeamEntity>() {
                                 @Override
                                 public boolean test(TeamEntity teamEntity) {
                                     return teamEntity.getTeamNameZh().equals(gameInfo.getGuestTeam());
                                 }
                             }).findFirst().get());
 
-                            gameInfo.setHomeTeamEntity(teamEntityList.stream().filter(new Predicate<TeamEntity>() {
+                            gameInfo.setHomeTeamEntity(teamEntityList().stream().filter(new Predicate<TeamEntity>() {
                                 @Override
                                 public boolean test(TeamEntity teamEntity) {
                                     return teamEntity.getTeamNameZh().equals(gameInfo.getHomeTeam());
@@ -178,6 +211,65 @@ public class ScoreBoardWidget extends AppWidgetProvider {
     }
 
 
+    private void loadBatteryView(Context context, RemoteViews remoteViews) {
+
+        int batteryLevel = BatteryHelper.getBatteryLevel(context);
+
+        if (batteryLevel > 14) {
+            remoteViews.setInt(R.id.battery_01, "setBackgroundColor", ColorUtils.string2Int("#FEFDFE"));
+        }
+        if (batteryLevel > 28) {
+            remoteViews.setInt(R.id.battery_02, "setBackgroundColor", ColorUtils.string2Int("#FEFDFE"));
+        }
+        if (batteryLevel > 42) {
+            remoteViews.setInt(R.id.battery_03, "setBackgroundColor", ColorUtils.string2Int("#FEFDFE"));
+        }
+        if (batteryLevel > 56) {
+            remoteViews.setInt(R.id.battery_04, "setBackgroundColor", ColorUtils.string2Int("#FEFDFE"));
+        }
+        if (batteryLevel > 70) {
+            remoteViews.setInt(R.id.battery_05, "setBackgroundColor", ColorUtils.string2Int("#FEFDFE"));
+        }
+        if (batteryLevel > 84) {
+            remoteViews.setInt(R.id.battery_06, "setBackgroundColor", ColorUtils.string2Int("#FEFDFE"));
+        }
+        if (batteryLevel > 95) {
+            remoteViews.setInt(R.id.battery_07, "setBackgroundColor", ColorUtils.string2Int("#FEFDFE"));
+        }
+
+
+        int maxVolume = VolumeUtils.getMaxVolume(10);
+        float floor = maxVolume / 8f;
+        int currentVolume = VolumeUtils.getVolume(10);
+
+
+        if (currentVolume > floor) {
+            remoteViews.setInt(R.id.wifi_01, "setBackgroundColor", ColorUtils.string2Int("#FEFDFE"));
+        }
+
+        if (currentVolume > 2 * floor) {
+            remoteViews.setInt(R.id.wifi_02, "setBackgroundColor", ColorUtils.string2Int("#FEFDFE"));
+        }
+        if (currentVolume > 3 * floor) {
+            remoteViews.setInt(R.id.wifi_03, "setBackgroundColor", ColorUtils.string2Int("#FEFDFE"));
+        }
+        if (currentVolume > 4 * floor) {
+            remoteViews.setInt(R.id.wifi_04, "setBackgroundColor", ColorUtils.string2Int("#FEFDFE"));
+        }
+        if (currentVolume > 5 * floor) {
+            remoteViews.setInt(R.id.wifi_05, "setBackgroundColor", ColorUtils.string2Int("#FEFDFE"));
+        }
+        if (currentVolume > 6 * floor) {
+            remoteViews.setInt(R.id.wifi_06, "setBackgroundColor", ColorUtils.string2Int("#FEFDFE"));
+        }
+
+        if (currentVolume > 7 * floor) {
+            remoteViews.setInt(R.id.wifi_07, "setBackgroundColor", ColorUtils.string2Int("#FEFDFE"));
+        }
+
+
+    }
+
     private void doInEveryMin(Context context) {
 
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
@@ -185,7 +277,7 @@ public class ScoreBoardWidget extends AppWidgetProvider {
 
         for (int appId : ids) {
             RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.nba_scoreboard_anim_layout);
-            TeamEntity minEntity = teamEntityList.get(new Random().nextInt(teamEntityList.size()));
+            TeamEntity minEntity = teamEntityList().get(new Random().nextInt(teamEntityList().size()));
             TeamEntity hourEntity;
             Logger.i("当前分配给min的球队:%s", minEntity.getTeamName());
             RemoteViews animViews = new RemoteViews(context.getPackageName(), ResourceUtils.getLayoutIdByName(String.format("espn_anim_layout_%s", minEntity.getTeamName())));
@@ -193,17 +285,19 @@ public class ScoreBoardWidget extends AppWidgetProvider {
             boolean changeHourView = isOnTheHour(LocalTime.now());
             if (changeHourView) {
                 Logger.i("当前分配给hour的球队:%s", minEntity.getTeamName());
-                hourEntity = teamEntityList.get(new Random().nextInt(teamEntityList.size()));
+                hourEntity = teamEntityList().get(new Random().nextInt(teamEntityList().size()));
                 RemoteViews animHourViews = new RemoteViews(context.getPackageName(), ResourceUtils.getLayoutIdByName(String.format("espn_anim_layout_%s", hourEntity.getTeamName())));
                 remoteViews.addView(R.id.hour_view_frame_layout, animHourViews);
             } else {
                 remoteViews.setInt(R.id.hour_view, "setBackgroundColor", ColorUtils.string2Int(appMap.get(appId).getCurrentHourTeam().getScoreBoardColor()));
                 hourEntity = null;
             }
+            loadBatteryView(context, remoteViews);
             appWidgetManager.updateAppWidget(appId, remoteViews);
             new Handler().postDelayed(() -> changeSimpleLayout(context, appId, minEntity, hourEntity), 2000);
         }
         WidgetNotification.setNextOneMin(context, ScoreBoardWidget.class);
+
 
     }
 
@@ -229,8 +323,11 @@ public class ScoreBoardWidget extends AppWidgetProvider {
             minTeamEntity = appMap.get(appId).getCurrentMinTeam();
             remoteViews.setInt(R.id.hour_view, "setBackgroundColor", ColorUtils.string2Int(minTeamEntity.getScoreBoardColor()));
         }
-
+        loadBatteryView(context, remoteViews);
         remoteViews.setOnClickPendingIntent(ResourceUtils.getIdByName("btn_look_game"), getPendingSelfIntent(context, LOGO_CLICK, appId));
+        remoteViews.setOnClickPendingIntent(ResourceUtils.getIdByName("btn_launch"), getPendingSelfIntent(context, ACTION_LAUNCH_APP, appId));
+
+
         appWidgetManager.updateAppWidget(appId, remoteViews);
     }
 
@@ -252,7 +349,7 @@ public class ScoreBoardWidget extends AppWidgetProvider {
         remoteViews.addView(R.id.min_view_frame_layout, animViews);
         RemoteViews animHourViews = new RemoteViews(context.getPackageName(), ResourceUtils.getLayoutIdByName(String.format("espn_anim_layout_%s", hourEntity.getTeamName())));
         remoteViews.addView(R.id.hour_view_frame_layout, animHourViews);
-
+        loadBatteryView(context, remoteViews);
         appWidgetManager.updateAppWidget(appId, remoteViews);
 
         new Handler().postDelayed(() -> {
@@ -288,6 +385,8 @@ public class ScoreBoardWidget extends AppWidgetProvider {
         remoteViews.setInt(R.id.min_view, "setBackgroundColor", ColorUtils.string2Int(gameInfo.getHomeTeamEntity().getScoreBoardColor()));
 
 
+        loadBatteryView(context, remoteViews);
+
         appWidgetManager.updateAppWidget(appId, remoteViews);
         // 2秒恢复原状态，并重新开启定时器
         new Handler().postDelayed(() -> {
@@ -307,20 +406,6 @@ public class ScoreBoardWidget extends AppWidgetProvider {
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-
-        if (teamEntityList.isEmpty()) {
-            String json = ResourceUtils.readRaw2String(R.raw.logo);
-            JSONArray objects = JSON.parseArray(json);
-            for (int i = 0; i < objects.size(); i++) {
-                teamEntityList.add(TeamEntity.builder()
-                        .simpleFrameSize(objects.getJSONObject(i).getInteger("simpleFrameSize"))
-                        .teamName(objects.getJSONObject(i).getString("teamName"))
-                        .teamNameZh(objects.getJSONObject(i).getString("teamNameZh"))
-                        .bgColor(objects.getJSONObject(i).getString("bgColor"))
-                        .scoreBoardColor(objects.getJSONObject(i).getString("scoreBoardColor"))
-                        .build());
-            }
-        }
 
 
         for (int appWidgetId : appWidgetIds) {

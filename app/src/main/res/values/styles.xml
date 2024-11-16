@@ -14,4 +14,17 @@
         <item name="android:fontFamily">@font/nba</item>
         <item name="fontFamily">@font/nba</item>
     </style>
+
+
+    <style name="blockStyle">
+        <item name="android:layout_width">11dp</item>
+        <item name="android:layout_height">6dp</item>
+<!--        <item name="android:background">#FEFDFE</item>-->
+        <item name="android:background">#303030</item>
+        <item name="android:layout_marginLeft">4dp</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:orientation">horizontal</item>
+    </style>
+
+
 </resources>
