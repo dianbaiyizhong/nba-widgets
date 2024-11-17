@@ -346,7 +346,6 @@ public class ScoreBoardWidget extends AppWidgetProvider {
 
         try {
             remoteViews.setOnClickPendingIntent(ResourceUtils.getIdByName("btn_launch"), getPendingSelfIntent(context, ACTION_LAUNCH_APP, appId));
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -425,7 +424,6 @@ public class ScoreBoardWidget extends AppWidgetProvider {
         if (action.equals(ACTION_LAUNCH_APP)) {
             Intent intent = context.getPackageManager().getLaunchIntentForPackage("com.hupu.games");
             return PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_MUTABLE);
-
 
         } else {
             Intent intent = new Intent(context, getClass());

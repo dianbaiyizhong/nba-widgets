@@ -48,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         // 设置logger的tag
+
+
         FormatStrategy formatStrategy = PrettyFormatStrategy.newBuilder()
                 .tag("nba-widget-log")
                 .build();
