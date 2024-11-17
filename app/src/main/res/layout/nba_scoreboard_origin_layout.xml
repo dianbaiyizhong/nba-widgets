@@ -2,6 +2,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/score_board_border"
+    style="@style/Widget.Nbawidgets.AppWidget.Container"
     android:orientation="vertical"
     android:padding="3dp">
 

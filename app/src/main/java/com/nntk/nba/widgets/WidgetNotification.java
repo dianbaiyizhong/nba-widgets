@@ -35,10 +35,28 @@ public class WidgetNotification {
     @SuppressLint("ScheduleExactAlarm")
     public static void setNextOneMin(Context context, Class clazz) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+//        Calendar calendar = Calendar.getInstance();
+//        calendar.setTime(new Date());
+//        calendar.set(Calendar.SECOND, 0);
+//        calendar.add(Calendar.MINUTE, 1);
+
+        // 获取当前时间
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(new Date());
-        calendar.set(Calendar.SECOND, 0);
-        calendar.add(Calendar.MINUTE, 1);
+
+        // 当前时间的秒数
+        int currentSecond = calendar.get(Calendar.SECOND);
+
+        // 判断是否当前时间小于30秒
+        if (currentSecond < 30) {
+            // 设置当前分钟的第59秒
+            calendar.set(Calendar.SECOND, 59);
+            calendar.set(Calendar.MILLISECOND, 0); // 清除毫秒，确保精准
+        } else {
+            // 设置下一分钟的第59秒
+            calendar.add(Calendar.MINUTE, 1); // 加一分钟
+            calendar.set(Calendar.SECOND, 59);
+            calendar.set(Calendar.MILLISECOND, 0); // 清除毫秒，确保精准
+        }
         Logger.i("alarm设置，下一个分钟的触发时间是%s", calendar.getTime());
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTime().getTime(), createClockTickIntent(context, clazz));
     }
@@ -47,7 +65,7 @@ public class WidgetNotification {
     private static PendingIntent createClockTickIntent(Context context, Class clazz) {
         Intent intent = new Intent(context, clazz);
         intent.setAction(ACTION_AUTO_UPDATE);
-        return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_MUTABLE);
     }
 
 

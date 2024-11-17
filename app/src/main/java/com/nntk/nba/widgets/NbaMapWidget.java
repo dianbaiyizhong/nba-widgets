@@ -103,7 +103,7 @@ public class NbaMapWidget extends AppWidgetProvider {
         intent.putExtra("movieType", movieType);
         intent.putExtra("playTime", getPlayTime(teamName, movieType));
         intent.putExtra("appId", appWidgetId);
-        return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_MUTABLE);
     }
 
 

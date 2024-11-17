@@ -401,7 +401,7 @@ public class ScoreBoardWidget extends AppWidgetProvider {
         Intent intent = new Intent(context, getClass());
         intent.setAction(action);
         intent.putExtra("appId", appWidgetId);
-        return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_MUTABLE);
     }
 
     @Override

@@ -20,6 +20,7 @@ import com.blankj.utilcode.util.ConvertUtils;
 import com.blankj.utilcode.util.ObjectUtils;
 import com.blankj.utilcode.util.ResourceUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
+import com.blankj.utilcode.util.ScreenUtils;
 import com.nntk.nba.widgets.adapter.NbaLogoAdapter;
 import com.nntk.nba.widgets.constant.SettingConst;
 import com.nntk.nba.widgets.entity.TeamEntity;
@@ -135,6 +136,12 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void createGameWidget() {
+
+//        if (ScreenUtils.getScreenDensityDpi() < 554) {
+//            return;
+//        }
+
+
         ComponentName serviceComponent = new ComponentName(getApplication(), ScoreBoardWidget.class);
         AppWidgetManager.getInstance(getApplicationContext())
                 .requestPinAppWidget(serviceComponent, null, null);
