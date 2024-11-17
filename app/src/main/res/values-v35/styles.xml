@@ -4,7 +4,7 @@
     <style name="Widget.Nbawidgets.AppWidget.Container" parent="android:Widget.DeviceDefault">
         <item name="android:id">@android:id/background</item>
         <item name="android:padding">?attr/appWidgetPadding</item>
-        <item name="android:clipToOutline">false</item>
+        <item name="android:clipToOutline">true</item>
     </style>
 
 

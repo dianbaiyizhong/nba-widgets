@@ -1,11 +1,14 @@
 package com.nntk.nba.widgets;
 
+import static com.nntk.nba.widgets.constant.SettingConst.CURRENT_INFO;
+
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Handler;
 import android.view.View;
 import android.widget.RemoteViews;
@@ -17,6 +20,7 @@ import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONArray;
 import com.blankj.utilcode.util.AppUtils;
 import com.blankj.utilcode.util.ColorUtils;
+import com.blankj.utilcode.util.ObjectUtils;
 import com.blankj.utilcode.util.ResourceUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
 import com.blankj.utilcode.util.ScreenUtils;
@@ -82,8 +86,29 @@ public class ScoreBoardWidget extends AppWidgetProvider {
     }
 
 
-    private static Map<Integer, CurrentInfo> appMap = new HashMap<>();
+    private static CurrentInfo getCurrentInfo() {
+        if (ObjectUtils.isEmpty(SPStaticUtils.getString(SettingConst.CURRENT_INFO))) {
+            return new CurrentInfo();
+        }
 
+        return JSON.parseObject(SPStaticUtils.getString(CURRENT_INFO), CurrentInfo.class);
+    }
+
+    private static void setCurrentInfo(TeamEntity hourEntity, TeamEntity minEntity) {
+        if (hourEntity != null) {
+            CurrentInfo currentInfo = getCurrentInfo();
+            currentInfo
+                    .setCurrentHourTeam(hourEntity);
+            SPStaticUtils.put(CURRENT_INFO, JSON.toJSONString(currentInfo));
+        }
+
+        if (minEntity != null) {
+            CurrentInfo currentInfo = getCurrentInfo();
+            currentInfo
+                    .setCurrentMinTeam(hourEntity);
+            SPStaticUtils.put(CURRENT_INFO, JSON.toJSONString(currentInfo));
+        }
+    }
 
     private void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                  int appWidgetId) {
@@ -91,10 +116,8 @@ public class ScoreBoardWidget extends AppWidgetProvider {
         TeamEntity hourEntity = teamEntityList().get(new Random().nextInt(teamEntityList().size()));
         TeamEntity minEntity = teamEntityList().get(new Random().nextInt(teamEntityList().size()));
 
-        appMap.put(appWidgetId, CurrentInfo.builder()
-                .currentHourTeam(hourEntity)
-                .currentMinTeam(minEntity)
-                .build());
+
+        setCurrentInfo(hourEntity, minEntity);
 
         Logger.i("当前随机到两个球队:%s,%s", hourEntity.getTeamName(), minEntity.getTeamName());
         changeSimpleLayout(context, appWidgetId, minEntity, hourEntity);
@@ -106,12 +129,6 @@ public class ScoreBoardWidget extends AppWidgetProvider {
     public void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent);
         Logger.i("onReceive:%s", intent.getAction());
-
-        if (Objects.equals(intent.getAction(), ACTION_LAUNCH_APP)) {
-
-            AppUtils.launchApp("com.hupu.games");
-            return;
-        }
 
 
         if (Objects.equals(intent.getAction(), ACTION_AUTO_UPDATE)) {
@@ -289,7 +306,7 @@ public class ScoreBoardWidget extends AppWidgetProvider {
                 RemoteViews animHourViews = new RemoteViews(context.getPackageName(), ResourceUtils.getLayoutIdByName(String.format("espn_anim_layout_%s", hourEntity.getTeamName())));
                 remoteViews.addView(R.id.hour_view_frame_layout, animHourViews);
             } else {
-                remoteViews.setInt(R.id.hour_view, "setBackgroundColor", ColorUtils.string2Int(appMap.get(appId).getCurrentHourTeam().getScoreBoardColor()));
+                remoteViews.setInt(R.id.hour_view, "setBackgroundColor", ColorUtils.string2Int(getCurrentInfo().getCurrentHourTeam().getScoreBoardColor()));
                 hourEntity = null;
             }
             loadBatteryView(context, remoteViews);
@@ -309,24 +326,30 @@ public class ScoreBoardWidget extends AppWidgetProvider {
         if (hourTeamEntity != null) {
             remoteViews.setInt(R.id.hour_view, "setBackgroundColor", ColorUtils.string2Int(hourTeamEntity.getScoreBoardColor()));
             // 记下当前队伍
-            appMap.get(appId).setCurrentHourTeam(hourTeamEntity);
+            setCurrentInfo(hourTeamEntity, null);
         } else {
-            hourTeamEntity = appMap.get(appId).getCurrentHourTeam();
+            hourTeamEntity = getCurrentInfo().getCurrentHourTeam();
             remoteViews.setInt(R.id.hour_view, "setBackgroundColor", ColorUtils.string2Int(hourTeamEntity.getScoreBoardColor()));
         }
 
         if (minTeamEntity != null) {
             remoteViews.setInt(R.id.min_view, "setBackgroundColor", ColorUtils.string2Int(minTeamEntity.getScoreBoardColor()));
             // 记下当前队伍
-            appMap.get(appId).setCurrentMinTeam(minTeamEntity);
+            setCurrentInfo(null, minTeamEntity);
+
         } else {
-            minTeamEntity = appMap.get(appId).getCurrentMinTeam();
+            minTeamEntity = getCurrentInfo().getCurrentMinTeam();
             remoteViews.setInt(R.id.hour_view, "setBackgroundColor", ColorUtils.string2Int(minTeamEntity.getScoreBoardColor()));
         }
         loadBatteryView(context, remoteViews);
         remoteViews.setOnClickPendingIntent(ResourceUtils.getIdByName("btn_look_game"), getPendingSelfIntent(context, LOGO_CLICK, appId));
-        remoteViews.setOnClickPendingIntent(ResourceUtils.getIdByName("btn_launch"), getPendingSelfIntent(context, ACTION_LAUNCH_APP, appId));
 
+        try {
+            remoteViews.setOnClickPendingIntent(ResourceUtils.getIdByName("btn_launch"), getPendingSelfIntent(context, ACTION_LAUNCH_APP, appId));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         appWidgetManager.updateAppWidget(appId, remoteViews);
     }
@@ -344,6 +367,7 @@ public class ScoreBoardWidget extends AppWidgetProvider {
 
         TeamEntity minEntity = gameInfo.getHomeTeamEntity();
         TeamEntity hourEntity = gameInfo.getGuestTeamEntity();
+
 
         RemoteViews animViews = new RemoteViews(context.getPackageName(), ResourceUtils.getLayoutIdByName(String.format("espn_anim_layout_%s", minEntity.getTeamName())));
         remoteViews.addView(R.id.min_view_frame_layout, animViews);
@@ -398,15 +422,21 @@ public class ScoreBoardWidget extends AppWidgetProvider {
 
 
     protected PendingIntent getPendingSelfIntent(Context context, String action, int appWidgetId) {
-        Intent intent = new Intent(context, getClass());
-        intent.setAction(action);
-        intent.putExtra("appId", appWidgetId);
-        return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_MUTABLE);
+        if (action.equals(ACTION_LAUNCH_APP)) {
+            Intent intent = context.getPackageManager().getLaunchIntentForPackage("com.hupu.games");
+            return PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_MUTABLE);
+
+
+        } else {
+            Intent intent = new Intent(context, getClass());
+            intent.setAction(action);
+            intent.putExtra("appId", appWidgetId);
+            return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_MUTABLE);
+        }
     }
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-
 
         for (int appWidgetId : appWidgetIds) {
             updateAppWidget(context, appWidgetManager, appWidgetId);

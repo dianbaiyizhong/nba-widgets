@@ -3,7 +3,6 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-
     <include layout="@layout/nba_scoreboard_origin_layout" />
 
 

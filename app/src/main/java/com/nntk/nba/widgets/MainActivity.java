@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONArray;
+import com.blankj.utilcode.util.AppUtils;
 import com.blankj.utilcode.util.ConvertUtils;
 import com.blankj.utilcode.util.ObjectUtils;
 import com.blankj.utilcode.util.ResourceUtils;
@@ -137,10 +139,14 @@ public class MainActivity extends AppCompatActivity {
 
     private void createGameWidget() {
 
-//        if (ScreenUtils.getScreenDensityDpi() < 554) {
-//            return;
-//        }
 
+
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getApplicationContext());
+        int[] ids = appWidgetManager.getAppWidgetIds(new ComponentName(getApplication(), ScoreBoardWidget.class));
+        if (ids.length > 0) {
+            Toast.makeText(getApplicationContext(), "你当前已经部署过这个插件，请到你的桌面仔细看看", Toast.LENGTH_LONG).show();
+            return;
+        }
 
         ComponentName serviceComponent = new ComponentName(getApplication(), ScoreBoardWidget.class);
         AppWidgetManager.getInstance(getApplicationContext())
