@@ -203,7 +203,8 @@ public class ScoreBoardWidget extends AppWidgetProvider {
                             ThreadUtils.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    changeGameAnimLayout(context, intent.getIntExtra("appId", 0), gameInfo);
+
+                                    changeGameAnimLayout(context, gameInfo);
                                 }
                             });
 
@@ -353,31 +354,37 @@ public class ScoreBoardWidget extends AppWidgetProvider {
         appWidgetManager.updateAppWidget(appId, remoteViews);
     }
 
-    protected void changeGameAnimLayout(Context context, int appId, GameInfo gameInfo) {
+    protected void changeGameAnimLayout(Context context, GameInfo gameInfo) {
 
 
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-        // 先清除定时器
-        WidgetNotification.clearWidgetUpdate(context, ScoreBoardWidget.class);
-        RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.nba_scoreboard_anim_layout);
+
+        int[] ids = appWidgetManager.getAppWidgetIds(new ComponentName(context, ScoreBoardWidget.class));
+
+        for (int appId : ids) {
+            // 先清除定时器
+            WidgetNotification.clearWidgetUpdate(context, ScoreBoardWidget.class);
+            RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.nba_scoreboard_anim_layout);
 
 //        TeamEntity minEntity = teamEntityList.get(new Random().nextInt(teamEntityList.size()));
 //        TeamEntity hourEntity = teamEntityList.get(new Random().nextInt(teamEntityList.size()));
 
-        TeamEntity minEntity = gameInfo.getHomeTeamEntity();
-        TeamEntity hourEntity = gameInfo.getGuestTeamEntity();
+            TeamEntity minEntity = gameInfo.getHomeTeamEntity();
+            TeamEntity hourEntity = gameInfo.getGuestTeamEntity();
 
 
-        RemoteViews animViews = new RemoteViews(context.getPackageName(), ResourceUtils.getLayoutIdByName(String.format("espn_anim_layout_%s", minEntity.getTeamName())));
-        remoteViews.addView(R.id.min_view_frame_layout, animViews);
-        RemoteViews animHourViews = new RemoteViews(context.getPackageName(), ResourceUtils.getLayoutIdByName(String.format("espn_anim_layout_%s", hourEntity.getTeamName())));
-        remoteViews.addView(R.id.hour_view_frame_layout, animHourViews);
-        loadBatteryView(context, remoteViews);
-        appWidgetManager.updateAppWidget(appId, remoteViews);
+            RemoteViews animViews = new RemoteViews(context.getPackageName(), ResourceUtils.getLayoutIdByName(String.format("espn_anim_layout_%s", minEntity.getTeamName())));
+            remoteViews.addView(R.id.min_view_frame_layout, animViews);
+            RemoteViews animHourViews = new RemoteViews(context.getPackageName(), ResourceUtils.getLayoutIdByName(String.format("espn_anim_layout_%s", hourEntity.getTeamName())));
+            remoteViews.addView(R.id.hour_view_frame_layout, animHourViews);
+            loadBatteryView(context, remoteViews);
+            appWidgetManager.updateAppWidget(appId, remoteViews);
 
-        new Handler().postDelayed(() -> {
-            changeGameLayout(context, appId, gameInfo);
-        }, 2000);
+            new Handler().postDelayed(() -> {
+                changeGameLayout(context, appId, gameInfo);
+            }, 2000);
+        }
+
 
     }
 
@@ -416,7 +423,7 @@ public class ScoreBoardWidget extends AppWidgetProvider {
             changeSimpleLayout(context, appId, gameInfo.getHomeTeamEntity(), gameInfo.getGuestTeamEntity());
             WidgetNotification.scheduleWidgetUpdate(context, ScoreBoardWidget.class);
 
-        }, 5000);
+        }, 3000);
     }
 
 
