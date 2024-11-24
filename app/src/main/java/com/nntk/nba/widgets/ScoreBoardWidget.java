@@ -410,9 +410,18 @@ public class ScoreBoardWidget extends AppWidgetProvider {
         remoteViews.setTextViewText(R.id.tv_home_team_rate, gameInfo.getHomeRate());
         remoteViews.setTextViewText(R.id.tv_guest_team_rate, gameInfo.getGuestRate());
 
-
-        remoteViews.setInt(R.id.hour_view, "setBackgroundColor", ColorUtils.string2Int(gameInfo.getGuestTeamEntity().getScoreBoardColor()));
-        remoteViews.setInt(R.id.min_view, "setBackgroundColor", ColorUtils.string2Int(gameInfo.getHomeTeamEntity().getScoreBoardColor()));
+        int guestDrawableId = ResourceUtils.getDrawableIdByName(String.format("gradient_%s_background", gameInfo.getGuestTeamEntity().getTeamName()));
+        if (guestDrawableId != 0) {
+            remoteViews.setInt(R.id.hour_view, "setBackgroundResource", guestDrawableId);
+        } else {
+            remoteViews.setInt(R.id.hour_view, "setBackgroundColor", ColorUtils.string2Int(gameInfo.getGuestTeamEntity().getScoreBoardColor()));
+        }
+        int homeDrawableId = ResourceUtils.getDrawableIdByName(String.format("gradient_%s_background", gameInfo.getHomeTeamEntity().getTeamName()));
+        if (homeDrawableId != 0) {
+            remoteViews.setInt(R.id.min_view, "setBackgroundResource", homeDrawableId);
+        } else {
+            remoteViews.setInt(R.id.min_view, "setBackgroundColor", ColorUtils.string2Int(gameInfo.getHomeTeamEntity().getScoreBoardColor()));
+        }
 
 
         loadBatteryView(context, remoteViews);
