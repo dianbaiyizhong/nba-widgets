@@ -1,10 +1,32 @@
-<?xml version="1.0" encoding="utf-8"?><!-- res/drawable/gradient_background.xml -->
-<shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <gradient
-        android:angle="0"
-        android:centerColor="#330173"
-        android:endColor="#120328"
-        android:startColor="#120328" />
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#431C67" />
+        </shape>
+    </item>
 
 
-</shape>
+    <item
+        android:width="20dp"
+        android:gravity="left">
+        <shape android:shape="rectangle">
+            <gradient
+                android:centerColor="#431C67"
+                android:startColor="#313131" />
+        </shape>
+    </item>
+
+
+    <item
+        android:width="20dp"
+        android:gravity="right"
+        android:right="0dp">
+        <shape android:shape="rectangle">
+            <gradient
+                android:angle="0"
+                android:centerColor="#431C67"
+                android:endColor="#313131" />
+        </shape>
+    </item>
+</layer-list>

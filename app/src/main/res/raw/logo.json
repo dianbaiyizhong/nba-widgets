@@ -1,7 +1,7 @@
 [
   {
     "teamName": "76ers",
-    "teamNameZh": "75人",
+    "teamNameZh": "76人",
     "simpleFrameSize": 120,
     "movie2015FrameSize": 180,
     "movie2016FrameSize": 201,
@@ -10,7 +10,8 @@
     "espnAnimSize": 57,
     "espnBgColor": "#F1F1EF",
     "espnFontColor": "#174C84",
-    "scoreBoardColor": "#FF144F"
+    "scoreBoardColor": "#FF144F",
+    "SpectrumSportsnetScoreBoardColor": "#005592"
   },
   {
     "teamName": "timberwolves",
@@ -23,7 +24,8 @@
     "espnAnimSize": 58,
     "espnBgColor": "",
     "espnFontColor": "",
-    "scoreBoardColor": "#007CD1"
+    "scoreBoardColor": "#007CD1",
+    "SpectrumSportsnetScoreBoardColor": "#081A32"
   },
   {
     "teamName": "bucks",
@@ -36,7 +38,8 @@
     "espnAnimSize": 55,
     "espnBgColor": "",
     "espnFontColor": "",
-    "scoreBoardColor": "#008B37"
+    "scoreBoardColor": "#008B37",
+    "SpectrumSportsnetScoreBoardColor": "#003814"
   },
   {
     "teamName": "pistons",
@@ -49,7 +52,8 @@
     "espnAnimSize": 58,
     "espnBgColor": "",
     "espnFontColor": "",
-    "scoreBoardColor": "#0055B1"
+    "scoreBoardColor": "#0055B1",
+    "SpectrumSportsnetScoreBoardColor": "#15346E"
   },
   {
     "teamName": "raptors",
@@ -62,7 +66,8 @@
     "espnAnimSize": 59,
     "espnBgColor": "",
     "espnFontColor": "",
-    "scoreBoardColor": "#FF1226"
+    "scoreBoardColor": "#FF1226",
+    "SpectrumSportsnetScoreBoardColor": "#171717"
   },
   {
     "teamName": "pacers",
@@ -75,7 +80,8 @@
     "espnAnimSize": 57,
     "espnBgColor": "#002B53",
     "espnFontColor": "#F1CF5B",
-    "scoreBoardColor": "#FFCE38"
+    "scoreBoardColor": "#FFCE38",
+    "SpectrumSportsnetScoreBoardColor": "#002349"
   },
   {
     "teamName": "cavaliers",
@@ -88,7 +94,8 @@
     "espnAnimSize": 57,
     "espnBgColor": "",
     "espnFontColor": "",
-    "scoreBoardColor": "#AE0046"
+    "scoreBoardColor": "#AE0046",
+    "SpectrumSportsnetScoreBoardColor": "#6C002B"
   },
   {
     "teamName": "wizards",
@@ -101,7 +108,8 @@
     "espnAnimSize": 43,
     "espnBgColor": "",
     "espnFontColor": "",
-    "scoreBoardColor": "#FF1436"
+    "scoreBoardColor": "#FF1436",
+    "SpectrumSportsnetScoreBoardColor": "#002149"
   },
   {
     "teamName": "nets",
@@ -114,7 +122,8 @@
     "espnAnimSize": 58,
     "espnBgColor": "",
     "espnFontColor": "",
-    "scoreBoardColor": "#A1B0B8"
+    "scoreBoardColor": "#A1B0B8",
+    "SpectrumSportsnetScoreBoardColor": "#0F191D"
   },
   {
     "teamName": "knicks",
@@ -127,7 +136,8 @@
     "espnAnimSize": 60,
     "espnBgColor": "",
     "espnFontColor": "",
-    "scoreBoardColor": "#0083DB"
+    "scoreBoardColor": "#0083DB",
+    "SpectrumSportsnetScoreBoardColor": "#005692"
   },
   {
     "teamName": "celtics",
@@ -140,7 +150,8 @@
     "espnAnimSize": 57,
     "espnBgColor": "#009648",
     "espnFontColor": "#EDF1E8",
-    "scoreBoardColor": "#01E37B"
+    "scoreBoardColor": "#01E37B",
+    "SpectrumSportsnetScoreBoardColor": "#00562E"
   },
   {
     "teamName": "hornets",
@@ -153,7 +164,8 @@
     "espnAnimSize": 57,
     "espnBgColor": "",
     "espnFontColor": "",
-    "scoreBoardColor": "#009FB8"
+    "scoreBoardColor": "#009FB8",
+    "SpectrumSportsnetScoreBoardColor": "#150B4C"
   },
   {
     "teamName": "magic",
@@ -166,7 +178,8 @@
     "espnAnimSize": 57,
     "espnBgColor": "",
     "espnFontColor": "",
-    "scoreBoardColor": "#00A5FF"
+    "scoreBoardColor": "#00A5FF",
+    "SpectrumSportsnetScoreBoardColor": "#005384"
   },
   {
     "teamName": "heat",
@@ -179,7 +192,8 @@
     "espnAnimSize": 57,
     "espnBgColor": "",
     "espnFontColor": "",
-    "scoreBoardColor": "#D5003F"
+    "scoreBoardColor": "#D5003F",
+    "SpectrumSportsnetScoreBoardColor": "#7A0023"
   },
   {
     "teamName": "trailblazers",
@@ -192,7 +206,8 @@
     "espnAnimSize": 58,
     "espnBgColor": "",
     "espnFontColor": "",
-    "scoreBoardColor": "#FF2E37"
+    "scoreBoardColor": "#FF2E37",
+    "SpectrumSportsnetScoreBoardColor": "#7B1E20"
   },
   {
     "teamName": "nuggets",
@@ -205,7 +220,8 @@
     "espnAnimSize": 57,
     "espnBgColor": "",
     "espnFontColor": "",
-    "scoreBoardColor": "#FFC436"
+    "scoreBoardColor": "#FFC436",
+    "SpectrumSportsnetScoreBoardColor": "#081932"
   },
   {
     "teamName": "thunder",
@@ -218,7 +234,8 @@
     "espnAnimSize": 60,
     "espnBgColor": "",
     "espnFontColor": "",
-    "scoreBoardColor": "#00C0FF"
+    "scoreBoardColor": "#00C0FF",
+    "SpectrumSportsnetScoreBoardColor": "#00234F"
   },
   {
     "teamName": "mavericks",
@@ -231,7 +248,8 @@
     "espnAnimSize": 56,
     "espnBgColor": "",
     "espnFontColor": "",
-    "scoreBoardColor": "#018FFE"
+    "scoreBoardColor": "#018FFE",
+    "SpectrumSportsnetScoreBoardColor": "#002149"
   },
   {
     "teamName": "spurs",
@@ -244,7 +262,8 @@
     "espnAnimSize": 61,
     "espnBgColor": "",
     "espnFontColor": "",
-    "scoreBoardColor": "#B3C8D6"
+    "scoreBoardColor": "#B3C8D6",
+    "SpectrumSportsnetScoreBoardColor": "#152023"
   },
   {
     "teamName": "rockets",
@@ -257,7 +276,8 @@
     "espnAnimSize": 56,
     "espnBgColor": "",
     "espnFontColor": "",
-    "scoreBoardColor": "#C71142"
+    "scoreBoardColor": "#C71142",
+    "SpectrumSportsnetScoreBoardColor": "#18191A"
   },
   {
     "teamName": "bulls",
@@ -270,7 +290,8 @@
     "espnAnimSize": 57,
     "espnBgColor": "#F2F0F3",
     "espnFontColor": "#C70B36",
-    "scoreBoardColor": "#FF0242"
+    "scoreBoardColor": "#FF0242",
+    "SpectrumSportsnetScoreBoardColor": "#14181A"
   },
   {
     "teamName": "grizzlies",
@@ -283,7 +304,8 @@
     "espnAnimSize": 57,
     "espnBgColor": "",
     "espnFontColor": "",
-    "scoreBoardColor": "#51A4FE"
+    "scoreBoardColor": "#51A4FE",
+    "SpectrumSportsnetScoreBoardColor": "#0D0F31"
   },
   {
     "teamName": "hawks",
@@ -296,7 +318,8 @@
     "espnAnimSize": 45,
     "espnBgColor": "",
     "espnFontColor": "",
-    "scoreBoardColor": "#FC1434"
+    "scoreBoardColor": "#FC1434",
+    "SpectrumSportsnetScoreBoardColor": "#7B1E20"
   },
   {
     "teamName": "pelicans",
@@ -309,7 +332,8 @@
     "espnAnimSize": 52,
     "espnBgColor": "",
     "espnFontColor": "",
-    "scoreBoardColor": "#EAB75C"
+    "scoreBoardColor": "#EAB75C",
+    "SpectrumSportsnetScoreBoardColor": "#002149"
   },
   {
     "teamName": "suns",
@@ -322,7 +346,8 @@
     "espnAnimSize": 63,
     "espnBgColor": "",
     "espnFontColor": "",
-    "scoreBoardColor": "#7211C9"
+    "scoreBoardColor": "#7211C9",
+    "SpectrumSportsnetScoreBoardColor": "#150B4B"
   },
   {
     "teamName": "jazz",
@@ -335,7 +360,8 @@
     "espnAnimSize": 60,
     "espnBgColor": "",
     "espnFontColor": "",
-    "scoreBoardColor": "#FDF038"
+    "scoreBoardColor": "#FDF038",
+    "SpectrumSportsnetScoreBoardColor": "#031219"
   },
   {
     "teamName": "warriors",
@@ -348,7 +374,8 @@
     "espnAnimSize": 58,
     "espnBgColor": "#FCFFFB",
     "espnFontColor": "#D80033",
-    "scoreBoardColor": "#FFC142"
+    "scoreBoardColor": "#FFC142",
+    "SpectrumSportsnetScoreBoardColor": "#19346E"
   },
   {
     "teamName": "kings",
@@ -361,7 +388,8 @@
     "espnAnimSize": 62,
     "espnBgColor": "",
     "espnFontColor": "",
-    "scoreBoardColor": "#8C00FD"
+    "scoreBoardColor": "#8C00FD",
+    "SpectrumSportsnetScoreBoardColor": "#062167"
   },
   {
     "teamName": "lakers",
@@ -374,7 +402,8 @@
     "espnAnimSize": 57,
     "espnBgColor": "#FFCE3E",
     "espnFontColor": "#17212E",
-    "scoreBoardColor": "#FFB92E"
+    "scoreBoardColor": "#FFB92E",
+    "SpectrumSportsnetScoreBoardColor": "#431C67"
   },
   {
     "teamName": "clippers",
@@ -387,6 +416,7 @@
     "espnAnimSize": 58,
     "espnBgColor": "#010A40",
     "espnFontColor": "#E5EDEF",
-    "scoreBoardColor": "#F70230"
+    "scoreBoardColor": "#F70230",
+    "SpectrumSportsnetScoreBoardColor": "#15346D"
   }
 ]

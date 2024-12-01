@@ -8,17 +8,12 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Handler;
 import android.view.View;
 import android.widget.RemoteViews;
-import android.widget.Toast;
-
-import androidx.core.app.NotificationCompat;
 
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONArray;
-import com.blankj.utilcode.util.AppUtils;
 import com.blankj.utilcode.util.ColorUtils;
 import com.blankj.utilcode.util.ObjectUtils;
 import com.blankj.utilcode.util.ResourceUtils;
@@ -34,16 +29,13 @@ import com.nntk.nba.widgets.util.BatteryHelper;
 import com.orhanobut.logger.Logger;
 
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
 import java.util.function.Predicate;
@@ -137,6 +129,9 @@ public class ScoreBoardWidget extends AppWidgetProvider {
                 WidgetNotification.setNextOneMin(context, ScoreBoardWidget.class);
                 return;
             }
+
+            Logger.i("executeTime:%s", intent.getLongExtra("executeTime", 0));
+
             doInEveryMin(context);
         }
 

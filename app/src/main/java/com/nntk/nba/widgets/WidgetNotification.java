@@ -65,6 +65,7 @@ public class WidgetNotification {
     private static PendingIntent createClockTickIntent(Context context, Class clazz) {
         Intent intent = new Intent(context, clazz);
         intent.setAction(ACTION_AUTO_UPDATE);
+        intent.putExtra("executeTime", System.currentTimeMillis());
         return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_MUTABLE);
     }
 
