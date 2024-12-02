@@ -54,6 +54,26 @@ public class PreferencesDialogFragment extends BottomSheetDialogFragment {
         radioGroup.check(ResourceUtils.getIdByName(SPStaticUtils.getString(SettingConst.MOVIE_TYPE)));
 
 
+
+
+        RadioGroup radioGroup2 = container.findViewById(R.id.radio_group_2);
+        radioGroup2.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+
+                RadioButton selectedRadioButton = container.findViewById(checkedId);
+                SPStaticUtils.put(SettingConst.SCORE_BOARD_TYPE, selectedRadioButton.getTag().toString());
+            }
+        });
+
+
+        radioGroup2.check(ResourceUtils.getIdByName(SPStaticUtils.getString(SettingConst.SCORE_BOARD_TYPE)));
+
+
+
+
+
+
         Spinner spinner = container.findViewById(R.id.sp_team);
 
         String json = ResourceUtils.readRaw2String(R.raw.logo);

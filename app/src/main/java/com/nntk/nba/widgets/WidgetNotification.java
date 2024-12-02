@@ -8,10 +8,13 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 
+import com.blankj.utilcode.util.SPStaticUtils;
+import com.nntk.nba.widgets.constant.SettingConst;
 import com.orhanobut.logger.Logger;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Random;
 
 public class WidgetNotification {
 
@@ -65,7 +68,7 @@ public class WidgetNotification {
     private static PendingIntent createClockTickIntent(Context context, Class clazz) {
         Intent intent = new Intent(context, clazz);
         intent.setAction(ACTION_AUTO_UPDATE);
-        intent.putExtra("executeTime", System.currentTimeMillis());
+        SPStaticUtils.put(SettingConst.LAST_PLAT_TIME, System.currentTimeMillis());
         return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_MUTABLE);
     }
 

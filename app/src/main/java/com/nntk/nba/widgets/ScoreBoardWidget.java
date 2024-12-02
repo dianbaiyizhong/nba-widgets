@@ -38,6 +38,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Predicate;
 
 import okhttp3.Call;
@@ -117,6 +121,7 @@ public class ScoreBoardWidget extends AppWidgetProvider {
 
     }
 
+
     @Override
     public void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent);
@@ -130,9 +135,13 @@ public class ScoreBoardWidget extends AppWidgetProvider {
                 return;
             }
 
-            Logger.i("executeTime:%s", intent.getLongExtra("executeTime", 0));
-
+            if ((System.currentTimeMillis() - SPStaticUtils.getLong(SettingConst.LAST_PLAT_TIME)) > 1000 * 120) {
+                Logger.i("由于相隔时间相差较大，取消执行");
+                WidgetNotification.setNextOneMin(context, ScoreBoardWidget.class);
+                return;
+            }
             doInEveryMin(context);
+
         }
 
 
@@ -388,8 +397,15 @@ public class ScoreBoardWidget extends AppWidgetProvider {
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
         RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.nba_scoreboard_game_layout);
 
-        remoteViews.setImageViewResource(R.id.iv_min_logo, ResourceUtils.getMipmapIdByName("logo_" + gameInfo.getHomeTeamEntity().getTeamName()));
-        remoteViews.setImageViewResource(R.id.iv_hour_logo, ResourceUtils.getMipmapIdByName("logo_" + gameInfo.getGuestTeamEntity().getTeamName()));
+
+        String scoreBoardType = SPStaticUtils.getString(SettingConst.SCORE_BOARD_TYPE);
+        String logoPrefix = "logo_";
+        if (scoreBoardType.contains("3")) {
+            logoPrefix = "logo_3d_";
+        }
+
+        remoteViews.setImageViewResource(R.id.iv_min_logo, ResourceUtils.getMipmapIdByName(logoPrefix + gameInfo.getHomeTeamEntity().getTeamName()));
+        remoteViews.setImageViewResource(R.id.iv_hour_logo, ResourceUtils.getMipmapIdByName(logoPrefix + gameInfo.getGuestTeamEntity().getTeamName()));
         remoteViews.setViewVisibility(R.id.iv_min_logo, View.VISIBLE);
         remoteViews.setViewVisibility(R.id.iv_hour_logo, View.VISIBLE);
 

@@ -59,6 +59,9 @@ public class MainActivity extends AppCompatActivity {
         if (ObjectUtils.isEmpty(SPStaticUtils.getString(SettingConst.MOVIE_TYPE))) {
             SPStaticUtils.put(SettingConst.MOVIE_TYPE, "nba2k15");
         }
+        if (ObjectUtils.isEmpty(SPStaticUtils.getString(SettingConst.SCORE_BOARD_TYPE))) {
+            SPStaticUtils.put(SettingConst.SCORE_BOARD_TYPE, "nba2d");
+        }
         if (ObjectUtils.isEmpty(SPStaticUtils.getString(SettingConst.LOVE_TEAM))) {
             SPStaticUtils.put(SettingConst.LOVE_TEAM, "rockets");
         }
@@ -140,7 +143,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void createGameWidget() {
-
 
 
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getApplicationContext());
