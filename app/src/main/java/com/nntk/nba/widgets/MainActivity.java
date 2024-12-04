@@ -8,21 +8,27 @@ import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.media3.ui.PlayerView;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.transition.Transition;
+import androidx.transition.TransitionManager;
 
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONArray;
-import com.blankj.utilcode.util.AppUtils;
 import com.blankj.utilcode.util.ConvertUtils;
 import com.blankj.utilcode.util.ObjectUtils;
 import com.blankj.utilcode.util.ResourceUtils;
 import com.blankj.utilcode.util.SPStaticUtils;
-import com.blankj.utilcode.util.ScreenUtils;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.transition.MaterialSharedAxis;
 import com.nntk.nba.widgets.adapter.NbaLogoAdapter;
 import com.nntk.nba.widgets.constant.SettingConst;
 import com.nntk.nba.widgets.entity.TeamEntity;
@@ -44,6 +50,15 @@ public class MainActivity extends AppCompatActivity {
     private PlayerView playerView;
 
     private ImageButton preferencesButton;
+
+    private ConstraintLayout headerContainer;
+
+    private Transition openSearchViewTransition;
+    private Transition closeSearchViewTransition;
+    private ImageButton searchButton;
+
+
+    private SearchView searchView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -77,8 +92,13 @@ public class MainActivity extends AppCompatActivity {
 
 
         preferencesButton = findViewById(R.id.preferences_button);
+        searchButton = findViewById(R.id.cat_toc_search_button);
 
+        headerContainer = findViewById(R.id.cat_toc_header_container);
+        searchView = findViewById(R.id.cat_toc_search_view);
 
+        initSearchViewTransitions();
+        initSearchView();
         ImageButton gameWidgetButton = findViewById(R.id.btn_game_widget);
 
 
@@ -93,6 +113,9 @@ public class MainActivity extends AppCompatActivity {
                 .show(getSupportFragmentManager(), ""));
 
 
+        searchButton.setOnClickListener(v -> openSearchView());
+
+
         String json = ResourceUtils.readRaw2String(R.raw.logo);
 
         JSONArray objects = JSON.parseArray(json);
@@ -105,21 +128,42 @@ public class MainActivity extends AppCompatActivity {
                     .build());
         }
 
+        int layoutType = 2;
         RecyclerView recyclerView = findViewById(R.id.rv);
-        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
-        nbaLogoAdapter = new NbaLogoAdapter(teamEntityList);
+        if (layoutType != 3) {
+            recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        } else {
+            recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        }
+        nbaLogoAdapter = new NbaLogoAdapter(teamEntityList, layoutType);
         recyclerView.setAdapter(nbaLogoAdapter);
-        recyclerView.addItemDecoration(
-                new GridDividerDecoration(
-                        ConvertUtils.dp2px(1),
-                        ContextCompat.getColor(this, R.color.cat_toc_status_wip_background_color),
-                        2));
+        if (layoutType == 1) {
+            recyclerView.addItemDecoration(
+                    new GridDividerDecoration(
+                            ConvertUtils.dp2px(1),
+                            ContextCompat.getColor(this, R.color.cat_toc_status_wip_background_color),
+                            2));
+        }
+
         nbaLogoAdapter.setNewInstance(teamEntityList);
 
 
         nbaLogoAdapter.setOnItemClickListener((adapter, view, position) -> {
             TeamEntity teamEntity = (TeamEntity) adapter.getData().get(position);
-            createDeskTopWidget(teamEntity.getTeamName());
+
+
+            new MaterialAlertDialogBuilder(this)
+                    .setTitle("请选择")
+                    .setPositiveButton("设置为比分关注球队", (dialog, which) -> {
+                        SPStaticUtils.put(SettingConst.LOVE_TEAM, teamEntity.getTeamName());
+                    })
+                    .setNegativeButton("设置一个时钟在桌面", (dialog, which) -> {
+                        createDeskTopWidget(teamEntity.getTeamName());
+                    })
+                    .setNeutralButton("取消", null)
+                    .show();
+
+
         });
 
     }
@@ -168,5 +212,71 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         playerView.getPlayer().play();
         super.onResume();
+    }
+
+
+    private void openSearchView() {
+        TransitionManager.beginDelayedTransition(headerContainer, openSearchViewTransition);
+
+        headerContainer.setVisibility(View.GONE);
+        searchView.setVisibility(View.VISIBLE);
+
+        searchView.requestFocus();
+    }
+
+    private void initSearchViewTransitions() {
+        openSearchViewTransition = createSearchViewTransition(true);
+        closeSearchViewTransition = createSearchViewTransition(false);
+    }
+
+    @NonNull
+    private MaterialSharedAxis createSearchViewTransition(boolean entering) {
+        MaterialSharedAxis sharedAxisTransition =
+                new MaterialSharedAxis(MaterialSharedAxis.X, entering);
+
+        sharedAxisTransition.addTarget(headerContainer);
+        sharedAxisTransition.addTarget(searchView);
+        return sharedAxisTransition;
+    }
+
+    private void initSearchView() {
+        searchView.setOnClickListener(v -> closeSearchView());
+
+        searchView.setOnQueryTextListener(
+                new SearchView.OnQueryTextListener() {
+                    @Override
+                    public boolean onQueryTextSubmit(String query) {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onQueryTextChange(String newText) {
+//                        tocAdapter.getFilter().filter(newText);
+                        return false;
+                    }
+                });
+    }
+
+
+    private void closeSearchView() {
+        TransitionManager.beginDelayedTransition(headerContainer, closeSearchViewTransition);
+
+        headerContainer.setVisibility(View.VISIBLE);
+        searchView.setVisibility(View.GONE);
+
+        clearSearchView();
+    }
+
+    private void clearSearchView() {
+        if (searchView != null) {
+            searchView.setQuery("", true);
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        clearSearchView();
+
     }
 }

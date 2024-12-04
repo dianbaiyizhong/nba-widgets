@@ -228,8 +228,7 @@ public class ScoreBoardWidget extends AppWidgetProvider {
     }
 
     private static boolean isOnTheHour(LocalTime time) {
-        return time.getMinute() == 59 && time.getSecond() < 10;
-
+        return (time.getMinute() == 59 && time.getSecond() > 50) || (time.getMinute() == 0 && time.getSecond() < 10);
     }
 
 
@@ -237,25 +236,25 @@ public class ScoreBoardWidget extends AppWidgetProvider {
 
         int batteryLevel = BatteryHelper.getBatteryLevel(context);
 
-        if (batteryLevel > 14) {
+        if (batteryLevel > 0) {
             remoteViews.setInt(R.id.battery_01, "setBackgroundColor", ColorUtils.string2Int("#FEFDFE"));
         }
-        if (batteryLevel > 28) {
+        if (batteryLevel > 14) {
             remoteViews.setInt(R.id.battery_02, "setBackgroundColor", ColorUtils.string2Int("#FEFDFE"));
         }
-        if (batteryLevel > 42) {
+        if (batteryLevel > 28) {
             remoteViews.setInt(R.id.battery_03, "setBackgroundColor", ColorUtils.string2Int("#FEFDFE"));
         }
-        if (batteryLevel > 56) {
+        if (batteryLevel > 45) {
             remoteViews.setInt(R.id.battery_04, "setBackgroundColor", ColorUtils.string2Int("#FEFDFE"));
         }
-        if (batteryLevel > 70) {
+        if (batteryLevel > 56) {
             remoteViews.setInt(R.id.battery_05, "setBackgroundColor", ColorUtils.string2Int("#FEFDFE"));
         }
-        if (batteryLevel > 84) {
+        if (batteryLevel > 70) {
             remoteViews.setInt(R.id.battery_06, "setBackgroundColor", ColorUtils.string2Int("#FEFDFE"));
         }
-        if (batteryLevel > 95) {
+        if (batteryLevel > 84) {
             remoteViews.setInt(R.id.battery_07, "setBackgroundColor", ColorUtils.string2Int("#FEFDFE"));
         }
 
@@ -370,8 +369,6 @@ public class ScoreBoardWidget extends AppWidgetProvider {
             WidgetNotification.clearWidgetUpdate(context, ScoreBoardWidget.class);
             RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.nba_scoreboard_anim_layout);
 
-//        TeamEntity minEntity = teamEntityList.get(new Random().nextInt(teamEntityList.size()));
-//        TeamEntity hourEntity = teamEntityList.get(new Random().nextInt(teamEntityList.size()));
 
             TeamEntity minEntity = gameInfo.getHomeTeamEntity();
             TeamEntity hourEntity = gameInfo.getGuestTeamEntity();

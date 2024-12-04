@@ -17,14 +17,28 @@ import com.nntk.nba.widgets.R;
 import com.nntk.nba.widgets.entity.TeamEntity;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class NbaLogoAdapter extends BaseQuickAdapter<TeamEntity, BaseViewHolder> {
 
 
-    public NbaLogoAdapter(@Nullable List<TeamEntity> data) {
-        super(R.layout.item_team_layout, data);
+    private int layoutType = 1;
+
+    static Map<Integer, Integer> layoutMap = new HashMap<>();
+
+    static {
+        layoutMap.put(1, R.layout.item_team_layout);
+        layoutMap.put(2, R.layout.item_team_album_layout);
+        layoutMap.put(3, R.layout.item_team_album_list_layout);
     }
+
+    public NbaLogoAdapter(@Nullable List<TeamEntity> data, int layoutType) {
+        super(layoutMap.get(layoutType), data);
+        this.layoutType = layoutType;
+    }
+
 
     @Override
     protected void convert(@NonNull BaseViewHolder baseViewHolder, TeamEntity teamEntity) {
@@ -33,7 +47,12 @@ public class NbaLogoAdapter extends BaseQuickAdapter<TeamEntity, BaseViewHolder>
 
         boolean isLightColor = ColorUtils.isLightColor(ColorUtils.string2Int(teamEntity.getBgColor()));
 
-        baseViewHolder.setTextColor(R.id.cat_toc_title, isLightColor ? Color.BLACK : Color.WHITE);
+        if (layoutType == 1) {
+            baseViewHolder.setTextColor(R.id.cat_toc_title, isLightColor ? Color.BLACK : Color.WHITE);
+        } else {
+            baseViewHolder.setText(R.id.sub_title, teamEntity.getTeamName());
+
+        }
         ImageView imageView = baseViewHolder.getView(R.id.image);
 
         //利用Android9.0新增的ImageDecoder读取gif动画

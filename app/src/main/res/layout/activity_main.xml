@@ -95,11 +95,11 @@
                         <ImageButton
                             android:id="@+id/cat_toc_search_button"
                             style="@style/Widget.Catalog.TocButton"
+                            app:tint="@color/white"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:visibility="gone"
                             app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toStartOf="@id/cat_toc_preferences_button"
+                            app:layout_constraintLeft_toRightOf="@+id/btn_game_widget"
                             app:layout_constraintTop_toTopOf="parent"
                             app:srcCompat="@drawable/ic_search_24px" />
 

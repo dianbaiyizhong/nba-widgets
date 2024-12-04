@@ -2,6 +2,12 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
 
+
+    <style name="MyAlertDialog" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <item name="android:windowMinWidthMinor">375dp</item>
+        <item name="windowFixedWidthMinor">375dp</item>
+    </style>
+
     <style name="Theme.NbaWidgets" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="windowActionModeOverlay">true</item>
         <item name="catalogToolbarStyle">@style/Widget.Catalog.Toolbar</item>
