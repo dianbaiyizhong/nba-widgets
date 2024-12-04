@@ -15,6 +15,7 @@ import androidx.appcompat.widget.SearchView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.media3.ui.PlayerView;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -30,6 +31,8 @@ import com.blankj.utilcode.util.SPStaticUtils;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.transition.MaterialSharedAxis;
 import com.nntk.nba.widgets.adapter.NbaLogoAdapter;
+import com.nntk.nba.widgets.animation.CustomAnimation1;
+import com.nntk.nba.widgets.animation.CustomAnimation2;
 import com.nntk.nba.widgets.constant.SettingConst;
 import com.nntk.nba.widgets.entity.TeamEntity;
 import com.nntk.nba.widgets.util.GridDividerDecoration;
@@ -58,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton searchButton;
 
 
+    private RecyclerView recyclerView;
     private SearchView searchView;
 
     @Override
@@ -101,6 +105,16 @@ public class MainActivity extends AppCompatActivity {
         initSearchView();
         ImageButton gameWidgetButton = findViewById(R.id.btn_game_widget);
 
+        ImageButton listTypeButton = findViewById(R.id.list_type_button);
+
+
+        listTypeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                initRecyclerView(3);
+            }
+        });
+
 
         gameWidgetButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -127,26 +141,9 @@ public class MainActivity extends AppCompatActivity {
                     .bgColor(objects.getJSONObject(i).getString("bgColor"))
                     .build());
         }
+        recyclerView = findViewById(R.id.rv);
 
-        int layoutType = 2;
-        RecyclerView recyclerView = findViewById(R.id.rv);
-        if (layoutType != 3) {
-            recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
-        } else {
-            recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-        }
-        nbaLogoAdapter = new NbaLogoAdapter(teamEntityList, layoutType);
-        recyclerView.setAdapter(nbaLogoAdapter);
-        if (layoutType == 1) {
-            recyclerView.addItemDecoration(
-                    new GridDividerDecoration(
-                            ConvertUtils.dp2px(1),
-                            ContextCompat.getColor(this, R.color.cat_toc_status_wip_background_color),
-                            2));
-        }
-
-        nbaLogoAdapter.setNewInstance(teamEntityList);
-
+        initRecyclerView(2);
 
         nbaLogoAdapter.setOnItemClickListener((adapter, view, position) -> {
             TeamEntity teamEntity = (TeamEntity) adapter.getData().get(position);
@@ -157,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
                     .setPositiveButton("设置为比分关注球队", (dialog, which) -> {
                         SPStaticUtils.put(SettingConst.LOVE_TEAM, teamEntity.getTeamName());
                     })
-                    .setNegativeButton("设置一个时钟在桌面", (dialog, which) -> {
+                    .setNegativeButton("在桌面设置一个时钟", (dialog, which) -> {
                         createDeskTopWidget(teamEntity.getTeamName());
                     })
                     .setNeutralButton("取消", null)
@@ -166,6 +163,30 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
+    }
+
+
+    private void initRecyclerView(int layoutType) {
+        if (layoutType != 3) {
+            recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        } else {
+            recyclerView.setLayoutManager(new LinearLayoutManager(this));
+            recyclerView.addItemDecoration(
+                    new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        }
+        nbaLogoAdapter = new NbaLogoAdapter(teamEntityList, layoutType);
+        nbaLogoAdapter.setAdapterAnimation(new CustomAnimation2());
+        nbaLogoAdapter.setAnimationFirstOnly(false);
+        recyclerView.setAdapter(nbaLogoAdapter);
+        if (layoutType == 1) {
+            recyclerView.addItemDecoration(
+                    new GridDividerDecoration(
+                            ConvertUtils.dp2px(1),
+                            ContextCompat.getColor(this, R.color.cat_toc_status_wip_background_color),
+                            2));
+        }
+
+        nbaLogoAdapter.setNewInstance(teamEntityList);
     }
 
 
