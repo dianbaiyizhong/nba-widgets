@@ -50,7 +50,7 @@
         android:maxLines="1"
         android:textAppearance="?attr/textAppearanceHeadline6"
         app:layout_constraintBottom_toTopOf="@+id/sub_title"
-        app:layout_constraintEnd_toStartOf="@id/album_duration"
+        app:layout_constraintEnd_toStartOf="@id/sub_title2"
         app:layout_constraintStart_toEndOf="@id/image"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed"
@@ -66,13 +66,13 @@
         android:maxLines="1"
         android:textAppearance="?attr/textAppearanceBody2"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/album_duration"
+        app:layout_constraintEnd_toStartOf="@id/sub_title2"
         app:layout_constraintStart_toEndOf="@id/image"
         app:layout_constraintTop_toBottomOf="@+id/cat_toc_title"
         tools:text="Gallant" />
 
     <TextView
-        android:id="@+id/album_duration"
+        android:id="@+id/sub_title2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="备注"

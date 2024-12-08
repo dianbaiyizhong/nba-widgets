@@ -2,10 +2,12 @@ package com.nntk.nba.widgets;
 
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
+import android.graphics.drawable.Animatable;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -33,6 +35,7 @@ import com.google.android.material.transition.MaterialSharedAxis;
 import com.nntk.nba.widgets.adapter.NbaLogoAdapter;
 import com.nntk.nba.widgets.animation.CustomAnimation1;
 import com.nntk.nba.widgets.animation.CustomAnimation2;
+import com.nntk.nba.widgets.animation.CustomAnimation3;
 import com.nntk.nba.widgets.constant.SettingConst;
 import com.nntk.nba.widgets.entity.TeamEntity;
 import com.nntk.nba.widgets.util.GridDividerDecoration;
@@ -84,6 +87,9 @@ public class MainActivity extends AppCompatActivity {
         if (ObjectUtils.isEmpty(SPStaticUtils.getString(SettingConst.LOVE_TEAM))) {
             SPStaticUtils.put(SettingConst.LOVE_TEAM, "rockets");
         }
+        if (ObjectUtils.isEmpty(SPStaticUtils.getInt(SettingConst.LIST_TYPE))) {
+            SPStaticUtils.put(SettingConst.LIST_TYPE, 2);
+        }
 
 
         // 布局延伸
@@ -111,7 +117,18 @@ public class MainActivity extends AppCompatActivity {
         listTypeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                initRecyclerView(3);
+                int type = SPStaticUtils.getInt(SettingConst.LIST_TYPE);
+
+                if (type == 2) {
+                    type = 3;
+                } else if (type == 3) {
+                    type = 1;
+                } else if (type == 1) {
+                    type = 2;
+                }
+
+                initRecyclerView(type);
+                SPStaticUtils.put(SettingConst.LIST_TYPE, type);
             }
         });
 
@@ -139,11 +156,56 @@ public class MainActivity extends AppCompatActivity {
                     .teamName(objects.getJSONObject(i).getString("teamName"))
                     .teamNameZh(objects.getJSONObject(i).getString("teamNameZh"))
                     .bgColor(objects.getJSONObject(i).getString("bgColor"))
+                    .city(objects.getJSONObject(i).getString("city"))
                     .build());
         }
         recyclerView = findViewById(R.id.rv);
 
-        initRecyclerView(2);
+        initRecyclerView(SPStaticUtils.getInt(SettingConst.LIST_TYPE));
+
+
+    }
+
+
+    private void initRecyclerView(int layoutType) {
+        if (recyclerView.getAdapter() != null) {
+            // 销毁gif
+            int itemCount = recyclerView.getAdapter().getItemCount();
+            for (int i = 0; i < itemCount; i++) {
+                RecyclerView.ViewHolder holder = recyclerView.findViewHolderForAdapterPosition(i);
+                if (holder != null) {
+                    View itemView = holder.itemView;
+                    ImageView imageView = itemView.findViewById(R.id.image);
+                    ((Animatable) imageView.getDrawable()).stop();
+                }
+            }
+        }
+
+
+        for (int i = 0; i < recyclerView.getItemDecorationCount(); i++) {
+            recyclerView.removeItemDecorationAt(i);
+        }
+
+        if (layoutType == 1) {
+            recyclerView.addItemDecoration(
+                    new GridDividerDecoration(
+                            ConvertUtils.dp2px(1),
+                            ContextCompat.getColor(this, R.color.cat_toc_status_wip_background_color),
+                            2));
+        }
+        if (layoutType != 3) {
+            recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        } else {
+            recyclerView.setLayoutManager(new LinearLayoutManager(this));
+            recyclerView.addItemDecoration(
+                    new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        }
+        nbaLogoAdapter = new NbaLogoAdapter(teamEntityList, layoutType);
+        nbaLogoAdapter.setAdapterAnimation(new CustomAnimation3());
+        nbaLogoAdapter.setAnimationFirstOnly(false);
+        recyclerView.setAdapter(nbaLogoAdapter);
+
+        nbaLogoAdapter.setNewInstance(teamEntityList);
 
         nbaLogoAdapter.setOnItemClickListener((adapter, view, position) -> {
             TeamEntity teamEntity = (TeamEntity) adapter.getData().get(position);
@@ -163,30 +225,6 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
-    }
-
-
-    private void initRecyclerView(int layoutType) {
-        if (layoutType != 3) {
-            recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
-        } else {
-            recyclerView.setLayoutManager(new LinearLayoutManager(this));
-            recyclerView.addItemDecoration(
-                    new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
-        }
-        nbaLogoAdapter = new NbaLogoAdapter(teamEntityList, layoutType);
-        nbaLogoAdapter.setAdapterAnimation(new CustomAnimation2());
-        nbaLogoAdapter.setAnimationFirstOnly(false);
-        recyclerView.setAdapter(nbaLogoAdapter);
-        if (layoutType == 1) {
-            recyclerView.addItemDecoration(
-                    new GridDividerDecoration(
-                            ConvertUtils.dp2px(1),
-                            ContextCompat.getColor(this, R.color.cat_toc_status_wip_background_color),
-                            2));
-        }
-
-        nbaLogoAdapter.setNewInstance(teamEntityList);
     }
 
 

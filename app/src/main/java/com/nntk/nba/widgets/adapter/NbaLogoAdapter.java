@@ -53,6 +53,9 @@ public class NbaLogoAdapter extends BaseQuickAdapter<TeamEntity, BaseViewHolder>
             baseViewHolder.setText(R.id.sub_title, teamEntity.getTeamName());
 
         }
+        if (layoutType == 3) {
+            baseViewHolder.setText(R.id.sub_title2, teamEntity.getCity());
+        }
         ImageView imageView = baseViewHolder.getView(R.id.image);
 
         //利用Android9.0新增的ImageDecoder读取gif动画
@@ -64,7 +67,7 @@ public class NbaLogoAdapter extends BaseQuickAdapter<TeamEntity, BaseViewHolder>
             imageView.setImageDrawable(drawable);
             ((Animatable) imageView.getDrawable()).start();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
 
 

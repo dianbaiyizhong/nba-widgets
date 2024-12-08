@@ -16,4 +16,7 @@ public class SettingConst {
 
     public static final String LAST_PLAT_TIME = "LAST_PLAT_TIME";
 
+
+    public static final String LIST_TYPE= "LIST_TYPE";
+
 }

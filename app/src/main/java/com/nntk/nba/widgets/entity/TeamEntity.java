@@ -25,4 +25,7 @@ public class TeamEntity {
 
     private String scoreBoardColor;
 
+
+    private String city;
+
 }
