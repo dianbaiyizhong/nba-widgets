@@ -38,10 +38,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Predicate;
 
 import okhttp3.Call;
@@ -298,7 +294,7 @@ public class ScoreBoardWidget extends AppWidgetProvider {
 
         for (int appId : ids) {
             RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.nba_scoreboard_anim_layout);
-            TeamEntity minEntity = teamEntityList().get(new Random().nextInt(teamEntityList().size()));
+            TeamEntity minEntity = teamEntityList().get(getMinIndex());
             TeamEntity hourEntity;
             Logger.i("当前分配给min的球队:%s", minEntity.getTeamName());
             RemoteViews animViews = new RemoteViews(context.getPackageName(), ResourceUtils.getLayoutIdByName(String.format("espn_anim_layout_%s", minEntity.getTeamName())));
@@ -306,7 +302,7 @@ public class ScoreBoardWidget extends AppWidgetProvider {
             boolean changeHourView = isOnTheHour(LocalTime.now());
             if (changeHourView) {
                 Logger.i("当前分配给hour的球队:%s", minEntity.getTeamName());
-                hourEntity = teamEntityList().get(new Random().nextInt(teamEntityList().size()));
+                hourEntity = teamEntityList().get(getHourIndex());
                 RemoteViews animHourViews = new RemoteViews(context.getPackageName(), ResourceUtils.getLayoutIdByName(String.format("espn_anim_layout_%s", hourEntity.getTeamName())));
                 remoteViews.addView(R.id.hour_view_frame_layout, animHourViews);
             } else {
@@ -320,6 +316,29 @@ public class ScoreBoardWidget extends AppWidgetProvider {
         WidgetNotification.setNextOneMin(context, ScoreBoardWidget.class);
 
 
+    }
+
+
+    private int getHourIndex() {
+        int currentIndex = SPStaticUtils.getInt(SettingConst.CURRENT_HOUR_TEAM_INDEX, 0);
+        if (currentIndex >= 30) {
+            currentIndex = 0;
+        } else {
+            currentIndex = currentIndex + 1;
+        }
+        SPStaticUtils.put(SettingConst.CURRENT_HOUR_TEAM_INDEX, currentIndex);
+        return currentIndex;
+    }
+
+    private int getMinIndex() {
+        int currentIndex = SPStaticUtils.getInt(SettingConst.CURRENT_MIN_TEAM_INDEX, 0);
+        if (currentIndex >= 30) {
+            currentIndex = 0;
+        } else {
+            currentIndex = currentIndex + 1;
+        }
+        SPStaticUtils.put(SettingConst.CURRENT_MIN_TEAM_INDEX, currentIndex);
+        return currentIndex;
     }
 
 
