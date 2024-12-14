@@ -310,7 +310,8 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public boolean onQueryTextChange(String newText) {
-//                        tocAdapter.getFilter().filter(newText);
+                        nbaLogoAdapter.getFilter().filter(newText);
+//                        nbaLogoAdapter.
                         return false;
                     }
                 });
