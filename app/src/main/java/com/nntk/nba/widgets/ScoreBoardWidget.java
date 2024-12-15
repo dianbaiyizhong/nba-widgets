@@ -321,7 +321,7 @@ public class ScoreBoardWidget extends AppWidgetProvider {
 
     private int getHourIndex() {
         int currentIndex = SPStaticUtils.getInt(SettingConst.CURRENT_HOUR_TEAM_INDEX, 0);
-        if (currentIndex >= 30) {
+        if (currentIndex >= 29) {
             currentIndex = 0;
         } else {
             currentIndex = currentIndex + 1;
@@ -332,7 +332,7 @@ public class ScoreBoardWidget extends AppWidgetProvider {
 
     private int getMinIndex() {
         int currentIndex = SPStaticUtils.getInt(SettingConst.CURRENT_MIN_TEAM_INDEX, 0);
-        if (currentIndex >= 30) {
+        if (currentIndex >= 29) {
             currentIndex = 0;
         } else {
             currentIndex = currentIndex + 1;
