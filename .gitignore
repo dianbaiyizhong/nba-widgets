@@ -95,3 +95,5 @@ module-nba-2k16/src/main/res/layout/*
 module-nba-2k15-circle/src/main/res/layout/*
 module-nba-2k16-circle/src/main/res/layout/*
 module-espn/src/main/res/layout/*
+
+app/release
