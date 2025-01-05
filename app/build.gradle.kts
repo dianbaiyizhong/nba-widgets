@@ -331,7 +331,7 @@ tasks.register("createLayoutXml") {
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:autoStart="true"
-        android:flipInterval="40"
+        android:flipInterval="20"
         tools:ignore="MissingConstraints">
 
     """
