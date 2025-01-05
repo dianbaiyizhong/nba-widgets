@@ -18,7 +18,7 @@ jobs:
         run: ls -la ${{ github.workspace }}
       - name: Ensure directory permissions
         run: |
-          chmod -R 755 ${{ github.workspace }}/
+          chmod -R 777 ${{ github.workspace }}/
       - name: Checkout repository
         uses: actions/checkout@v3
 
