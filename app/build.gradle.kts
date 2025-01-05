@@ -9,7 +9,21 @@ plugins {
 android {
     namespace = "com.nntk.nba.widgets"
     compileSdk = 34
-
+    signingConfigs {
+        create("release") {
+            storeFile = file("../key")
+            storePassword = "nbanba"
+            keyAlias = "nba"
+            keyPassword = "nbanba"
+        }
+    }
+    buildTypes {
+        getByName("release") {
+            isMinifyEnabled = false
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            signingConfig = signingConfigs.getByName("release")
+        }
+    }
     defaultConfig {
         applicationId = "com.nntk.nba.widgets"
         minSdk = 31
@@ -23,15 +37,7 @@ android {
         }
     }
 
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
-    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
@@ -366,7 +372,6 @@ tasks.register("createLayoutXml") {
         val logoJson = JsonSlurper()
             .parseText(logoFile.readText()) as List<Map<String, Any>>
         for (item in logoJson) {
-            print(item)
             val teamName: String = item["teamName"].toString()
             var outputFile =
                 file("../module-looped-logos-circle/src/main/res/layout/widget_layout_${teamName}.xml")

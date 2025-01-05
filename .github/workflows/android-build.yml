@@ -8,6 +8,7 @@ on:
 
 jobs:
   build:
+    permissions: write-all # 解决GitHub release failed with status: 403
     runs-on: ubuntu-latest
 
     steps:
@@ -41,12 +42,12 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Build APK
-        run: ./gradlew assembleDebug # 或 assembleRelease 以生成发布版 APK
+        run: ./gradlew assembleRelease # 或 assembleRelease 以生成发布版 APK
 
       - name: Upload APK to release
         uses: softprops/action-gh-release@v1
         with:
-          files: app/build/outputs/apk/debug/app-debug.apk # 调整路径到实际输出位置
+          files: app/build/outputs/apk/release/app-release.apk # 调整路径到实际输出位置
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -54,4 +55,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: apk
-          path: app/build/outputs/apk/debug/app-debug.apk # 调整路径到实际输出位置
+          path: app/build/outputs/apk/release/app-release.apk # 调整路径到实际输出位置
