@@ -49,7 +49,6 @@ jobs:
         with:
           files: app/build/outputs/apk/debug/app-debug.apk # 调整路径到实际输出位置
           tag_name: ${{ github.ref }}
-          body_path: ./release_notes.md # 如果有发布说明文件
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
