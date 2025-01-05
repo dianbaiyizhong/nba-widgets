@@ -14,9 +14,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: List files in workspace
+        run: ls -la ${{ github.workspace }}
       - name: Ensure directory permissions
         run: |
-          mkdir -p ${{ github.workspace }}/
           chmod -R 755 ${{ github.workspace }}/
       - name: Checkout repository
         uses: actions/checkout@v3
