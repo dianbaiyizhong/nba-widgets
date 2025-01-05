@@ -366,6 +366,7 @@ tasks.register("createLayoutXml") {
         val logoJson = JsonSlurper()
             .parseText(logoFile.readText()) as List<Map<String, Any>>
         for (item in logoJson) {
+            print(item)
             val teamName: String = item["teamName"].toString()
             var outputFile =
                 file("../module-looped-logos-circle/src/main/res/layout/widget_layout_${teamName}.xml")
@@ -403,7 +404,6 @@ tasks.register("createLayoutXml") {
             }
 
 
-            println(item["espnAnimSize"])
             if (item["espnAnimSize"] == null) {
                 continue
             }
