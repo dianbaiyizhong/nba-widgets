@@ -2,12 +2,9 @@ name: Build Android APK
 
 on:
   push:
-    branches:
-      - main # 或者你希望触发的其他分支
-  pull_request:
-    branches:
-      - main
-  workflow_dispatch: # 允许手动触发
+    tags:
+      - 'v*.*.*'
+
 
 jobs:
   build:
