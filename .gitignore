@@ -92,8 +92,8 @@ app/src/main/res/layout/widget_layout_*
 module-looped-logos-circle/src/main/res/layout/widget_layout_*
 module-nba-2k15/src/main/res/layout/*
 module-nba-2k16/src/main/res/layout/*
-module-nba-2k15-circle/src/main/res/layout/*
-module-nba-2k16-circle/src/main/res/layout/*
-module-espn/src/main/res/layout/*
+module-nba-2k15-circle/src/main/res/layout/movie_layout_*
+module-nba-2k16-circle/src/main/res/layout/movie_layout_*
+module-espn/src/main/res/layout/espn*
 
 app/release
