@@ -161,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
         }
         recyclerView = findViewById(R.id.rv);
 
-        initRecyclerView(SPStaticUtils.getInt(SettingConst.LIST_TYPE));
+        initRecyclerView(SPStaticUtils.getInt(SettingConst.LIST_TYPE, 1));
 
 
     }
