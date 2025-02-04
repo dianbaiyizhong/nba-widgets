@@ -117,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
         listTypeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int type = SPStaticUtils.getInt(SettingConst.LIST_TYPE);
+                int type = SPStaticUtils.getInt(SettingConst.LIST_TYPE, 1);
 
                 if (type == 2) {
                     type = 3;
