@@ -20,7 +20,10 @@ android {
     buildTypes {
         getByName("release") {
             isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
             signingConfig = signingConfigs.getByName("release")
         }
     }
@@ -357,9 +360,29 @@ tasks.register("createLayoutXml") {
             )
         }
 
+        for (i in 0 until 25) {
+
+            template.append(
+                """
+            
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/nba_on_espn_${teamName}_${
+                    (size - 1).toString().padStart(5, '0')
+                }" />
+            """
+            )
+        }
+
         template.append(
             """
                     </ViewFlipper>
+                    
+                    
+        
 
 </LinearLayout>
         """.trimIndent()

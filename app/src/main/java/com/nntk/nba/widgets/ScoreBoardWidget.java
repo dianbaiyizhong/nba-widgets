@@ -311,7 +311,7 @@ public class ScoreBoardWidget extends AppWidgetProvider {
             }
             loadBatteryView(context, remoteViews);
             appWidgetManager.updateAppWidget(appId, remoteViews);
-            new Handler().postDelayed(() -> changeSimpleLayout(context, appId, minEntity, hourEntity), 1000);
+            new Handler().postDelayed(() -> changeSimpleLayout(context, appId, minEntity, hourEntity), 1800);
         }
         WidgetNotification.setNextOneMin(context, ScoreBoardWidget.class);
 
@@ -402,7 +402,7 @@ public class ScoreBoardWidget extends AppWidgetProvider {
 
             new Handler().postDelayed(() -> {
                 changeGameLayout(context, appId, gameInfo);
-            }, 1000);
+            }, 1800);
         }
 
 
