@@ -360,7 +360,7 @@ tasks.register("createLayoutXml") {
             )
         }
 
-        for (i in 0 until 25) {
+        for (i in 0 until 35) {
 
             template.append(
                 """
