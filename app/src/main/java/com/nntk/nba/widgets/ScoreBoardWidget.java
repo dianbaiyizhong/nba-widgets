@@ -149,7 +149,7 @@ public class ScoreBoardWidget extends AppWidgetProvider {
                     OkHttpClient client = new OkHttpClient();
                     Request request = new Request.Builder()
                             .get()
-                            .url("https://nba.hupu.com/")
+                            .url("https://nba.hupu.com/games")
                             .build();
                     Call call = client.newCall(request);
                     try {
@@ -158,14 +158,38 @@ public class ScoreBoardWidget extends AppWidgetProvider {
                         if (response.isSuccessful()) {
                             String html = response.body().string();
 
-                            Elements cardTeams = Jsoup.parse(html).select("div.nba-match-container   div.match-card-team");
+                            Elements cardTeams = Jsoup.parse(html).select("div.gamecenter_content   div.list_box  div.team_vs_a");
                             List<GameInfo> gameInfoList = new ArrayList<>();
                             for (Element card : cardTeams) {
+
+
+                                Elements game = card.select("div.txt");
+                                String guestTeam = null;
+                                String guestRate = null;
+                                String homaTeam = null;
+                                String homaRate = null;
+
+
+                                if (game.get(0).select("span").size() == 1) {
+                                    guestTeam = game.get(0).select("span").get(0).text();
+                                    guestRate = "-";
+                                } else {
+                                    guestTeam = game.get(0).select("span").get(1).text();
+                                    guestRate = game.get(0).select("span").get(0).text();
+                                }
+                                if (game.get(1).select("span").size() == 1) {
+                                    homaTeam = game.get(1).select("span").get(0).text();
+                                    homaRate = "-";
+                                } else {
+                                    homaTeam = game.get(1).select("span").get(1).text();
+                                    homaRate = game.get(1).select("span").get(0).text();
+                                }
+
                                 gameInfoList.add(GameInfo.builder()
-                                        .guestTeam(card.select("span.team-name").get(0).text())
-                                        .homeTeam(card.select("span.team-name").get(1).text())
-                                        .guestRate(card.select("span.team-rate").get(0).text())
-                                        .homeRate(card.select("span.team-rate").get(1).text())
+                                        .guestRate(guestRate)
+                                        .guestTeam(guestTeam)
+                                        .homeRate(homaRate)
+                                        .homeTeam(homaTeam)
                                         .build());
                             }
                             String loveTeam = SPStaticUtils.getString(SettingConst.LOVE_TEAM);

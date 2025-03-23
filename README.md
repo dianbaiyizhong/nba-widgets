@@ -32,18 +32,6 @@
 
 ---
 
-## ⚙️ 配置说明
-
-### 设置项表格
-| 选项 | 值类型 | 默认值 | 说明 |
-|------|--------|--------|------|
-| 刷新间隔 | 1/5/10分钟 | 5分钟 | 数据更新频率 |
-| 主队优先 | 开关 | 开 | 始终将支持的主队显示在左侧 |
-| 夜间模式 | 自动/开/关 | 自动 | 22:00-7:00自动切换深色主题 |
-
-```markdown
-![设置界面截图](your-settings-screenshot-link)
-```
 
 ---
 
@@ -64,71 +52,24 @@
 ## ❓ 常见问题
 
 <details>
-<summary><b>如何降低耗电量？</b></summary>
+<summary><b>push报错：Support for password authentication was removed on August 13, 2021.？</b></summary>
 
-1. 将刷新间隔设为10分钟
-2. 在"省电设置"中启用「仅Wi-Fi更新」
-3. 关闭非关注球队的比赛通知
-</details>
+github上点击进入Settings==》Developer Settings==》Personal access tokens (classic)，重新生成一个密码来作为登陆密码
 
-<details>
-<summary><b>为什么小部件显示"No Games Today"？</b></summary>
 
-可能原因：
-- 当前无进行中的比赛（美国东部时间）
-- API服务临时中断（可尝试手动刷新）
-- 未授予网络权限
-</details>
 
 ---
 
 ## 🛠️ 开发者文档
 
-### 项目架构
-```plaintext
-src/
-├── data/       # 网络请求与缓存逻辑
-│   ├── NBAAPIClient.kt
-│   └── CacheManager.kt
-├── ui/         # 小部件界面
-│   ├── WidgetProvider.kt
-│   └── ScoreView.kt
-└── utils/      # 工具类
-    ├── TeamColorMapper.kt
-    └── DateFormatter.kt
-```
 
-### 编译说明
+
+### 如何发布
 ```bash
-# 使用 Android Studio 导入项目
-./gradlew assembleRelease
+git tag v1.0.0
+git push origin v1.0.0
+
 ```
 
----
 
-## 🤝 贡献指南
-欢迎通过以下方式参与：
-1. 提交新的球队主题色配置（参考 `teams_colors.json`）
-2. 翻译多语言支持（目前需要中文/英文）
-3. 优化数据缓存逻辑
 
-请先阅读 [CONTRIBUTING.md](your-contrib-link)
-
----
-
-## 📄 许可证
-[![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-yellow.svg)](https://opensource.org/licenses/)
-
----
-
-> 📧 问题反馈：通过 [Issues页面](your-issues-link) 或发送邮件至 your@email.com
-
----
-
-**提示**：你可以通过以下方式增强Wiki表现力：
-1. 添加实际运行视频/GIF
-2. 在「数据来源」章节补充API调用示例代码
-3. 使用 [Shields.io](https://shields.io) 添加构建状态徽章
-4. 插入用户评价精选（如Reddit/Twitter反馈截图）
-
-如果需要更动态的文档，推荐使用 [docsify](https://docsify.js.org) 生成交互式文档并部署到GitHub Pages！
