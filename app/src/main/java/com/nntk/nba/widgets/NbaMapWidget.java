@@ -42,10 +42,6 @@ public class NbaMapWidget extends AppWidgetProvider {
     public void onDeleted(Context context, int[] appWidgetIds) {
         super.onDeleted(context, appWidgetIds);
         WidgetNotification.clearWidgetUpdate(context, NbaMapWidget.class);
-        for (int appWidgetId : appWidgetIds) {
-            WidgetNotification.clearRestoreSimple(context, NbaMapWidget.class, appWidgetId);
-            appMap.remove(appWidgetId);
-        }
 
     }
 
@@ -53,11 +49,6 @@ public class NbaMapWidget extends AppWidgetProvider {
     public void onDisabled(Context context) {
 
         WidgetNotification.clearWidgetUpdate(context, NbaMapWidget.class);
-        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-        int[] ids = appWidgetManager.getAppWidgetIds(new ComponentName(context, NbaMapWidget.class));
-        for (int appWidgetId : ids) {
-            WidgetNotification.clearRestoreSimple(context, NbaMapWidget.class, appWidgetId);
-        }
 
     }
 
@@ -147,27 +138,16 @@ public class NbaMapWidget extends AppWidgetProvider {
             return;
         }
 
-        if (Objects.equals(intent.getAction(), WidgetNotification.ACTION_RESTORE_SIMPLE)) {
-            changeSimpleLayout(context, teamName, appId);
-            return;
-        }
-
         if (!Objects.requireNonNull(intent.getAction()).contains("CLICK")) {
             return;
         }
 
 
         if (Objects.requireNonNull(intent.getAction()).startsWith(LOGO_CLICK)) {
-            int playTime = intent.getIntExtra("playTime", 0);
-            if (playTime <= 0) {
-                playTime = getPlayTime(teamName, SPStaticUtils.getString(SettingConst.MOVIE_TYPE));
-            }
             changeMovieLayout(context, teamName, appId);
-            WidgetNotification.scheduleRestoreSimple(context, NbaMapWidget.class, playTime, teamName, appId);
 
         } else if (Objects.requireNonNull(intent.getAction()).startsWith(MOVIE_CLICK)) {
             changeSimpleLayout(context, teamName, appId);
-            WidgetNotification.clearRestoreSimple(context, NbaMapWidget.class, appId);
         }
 
 
