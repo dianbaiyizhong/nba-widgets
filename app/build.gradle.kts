@@ -121,8 +121,8 @@ tasks.register("createLayoutXml") {
     android:layout_height="match_parent">
 
     <ViewFlipper
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_gravity="center"
         android:autoStart="true"
         android:flipInterval="40">
@@ -135,7 +135,7 @@ tasks.register("createLayoutXml") {
                 """
                         <ImageView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:src="@mipmap/simple_circle_${teamName}_${i.toString().padStart(3, '0')}" />
                 
             """
@@ -148,8 +148,8 @@ tasks.register("createLayoutXml") {
 
         <ImageView
         android:id="@+id/vf_simple_logo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_gravity="center"
         android:background="?android:selectableItemBackground"
         android:src="@mipmap/glass_circle" />
@@ -196,7 +196,7 @@ tasks.register("createLayoutXml") {
 
     <ViewFlipper
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_gravity="center"
         android:autoStart="true"
         android:flipInterval="40">
@@ -209,7 +209,7 @@ tasks.register("createLayoutXml") {
                 """
                         <ImageView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:src="@mipmap/movie_2015_circle_${teamName}_${i.toString().padStart(5, '0')}" />
                 
             """
@@ -222,8 +222,8 @@ tasks.register("createLayoutXml") {
 
         <ImageView
         android:id="@+id/vf_logo_player"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_gravity="center"
         android:background="?android:selectableItemBackground"
         android:src="@mipmap/glass_circle" />
@@ -265,7 +265,7 @@ tasks.register("createLayoutXml") {
 
     <ViewFlipper
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_gravity="center"
         android:autoStart="true"
         android:flipInterval="20">
@@ -278,7 +278,7 @@ tasks.register("createLayoutXml") {
                 """
                         <ImageView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:src="@mipmap/movie_2016_circle_${teamName}_${i.toString().padStart(5, '0')}" />
                 
             """
@@ -291,8 +291,8 @@ tasks.register("createLayoutXml") {
 
         <ImageView
         android:id="@+id/vf_logo_player"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_gravity="center"
         android:background="?android:selectableItemBackground"
         android:src="@mipmap/glass_circle" />
