@@ -19,6 +19,7 @@ import java.util.Random;
 public class WidgetNotification {
 
     public static final String ACTION_AUTO_UPDATE = "AUTO_UPDATE";
+    public static final String ACTION_RESTORE_SIMPLE = "RESTORE_SIMPLE";
 
     private static int[] getActiveWidgetIds(Context context, Class clazz) {
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
@@ -76,5 +77,27 @@ public class WidgetNotification {
     public static void clearWidgetUpdate(Context context, Class clazz) {
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         am.cancel(createClockTickIntent(context, clazz));
+    }
+
+    @SuppressLint("ScheduleExactAlarm")
+    public static void scheduleRestoreSimple(Context context, Class clazz, int playTime, String teamName, int appWidgetId) {
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        PendingIntent pendingIntent = createRestoreSimpleIntent(context, clazz, teamName, appWidgetId);
+        alarmManager.cancel(pendingIntent);
+        Logger.i("animation播放结束，回到静态布局的时间是%s", new Date(System.currentTimeMillis() + playTime));
+        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + playTime, pendingIntent);
+    }
+
+    public static void clearRestoreSimple(Context context, Class clazz, int appWidgetId) {
+        AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        am.cancel(createRestoreSimpleIntent(context, clazz, null, appWidgetId));
+    }
+
+    private static PendingIntent createRestoreSimpleIntent(Context context, Class clazz, String teamName, int appWidgetId) {
+        Intent intent = new Intent(context, clazz);
+        intent.setAction(ACTION_RESTORE_SIMPLE);
+        intent.putExtra("teamName", teamName);
+        intent.putExtra("appId", appWidgetId);
+        return PendingIntent.getBroadcast(context, appWidgetId, intent, PendingIntent.FLAG_MUTABLE);
     }
 }
