@@ -22,6 +22,8 @@ public class TeamEntity {
 
     private int movie2016FrameSize;
 
+    private int espnAnimSize;
+
 
     private String scoreBoardColor;
 

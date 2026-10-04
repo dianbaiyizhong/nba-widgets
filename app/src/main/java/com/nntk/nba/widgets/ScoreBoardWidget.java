@@ -69,6 +69,7 @@ public class ScoreBoardWidget extends AppWidgetProvider {
                         .teamName(objects.getJSONObject(i).getString("teamName"))
                         .teamNameZh(objects.getJSONObject(i).getString("teamNameZh"))
                         .bgColor(objects.getJSONObject(i).getString("bgColor"))
+                        .espnAnimSize(objects.getJSONObject(i).getInteger("espnAnimSize"))
                         .scoreBoardColor(objects.getJSONObject(i).getString("scoreBoardColor"))
                         .build());
             }
@@ -336,7 +337,7 @@ public class ScoreBoardWidget extends AppWidgetProvider {
             }
             loadBatteryView(context, remoteViews);
             appWidgetManager.updateAppWidget(appId, remoteViews);
-            new Handler().postDelayed(() -> changeSimpleLayout(context, appId, minEntity, hourEntity), 1800);
+            new Handler().postDelayed(() -> changeSimpleLayout(context, appId, minEntity, hourEntity), getEspnAnimPlayTime(minEntity));
         }
         WidgetNotification.setNextOneMin(context, ScoreBoardWidget.class);
 
@@ -364,6 +365,15 @@ public class ScoreBoardWidget extends AppWidgetProvider {
         }
         SPStaticUtils.put(SettingConst.CURRENT_MIN_TEAM_INDEX, currentIndex);
         return currentIndex;
+    }
+
+    /**
+     * espn 动画布局 ViewFlipper 的 flipInterval=20ms，按实际帧数计算一轮的时长。
+     * ViewFlipper(autoStart) 在 RemoteViews 中会一直循环，展示满一轮的时长后必须主动切换布局，
+     * 否则部分机型(如三星)上会无限循环播放。
+     */
+    private static int getEspnAnimPlayTime(TeamEntity teamEntity) {
+        return teamEntity.getEspnAnimSize() * 20 + 50;
     }
 
 
@@ -425,9 +435,11 @@ public class ScoreBoardWidget extends AppWidgetProvider {
             loadBatteryView(context, remoteViews);
             appWidgetManager.updateAppWidget(appId, remoteViews);
 
+            // min/hour 两块动画可能帧数不同，取较长的一轮时长，保证两块都恰好完整播放一次
+            int playTime = Math.max(getEspnAnimPlayTime(minEntity), getEspnAnimPlayTime(hourEntity));
             new Handler().postDelayed(() -> {
                 changeGameLayout(context, appId, gameInfo);
-            }, 1800);
+            }, playTime);
         }
 
 

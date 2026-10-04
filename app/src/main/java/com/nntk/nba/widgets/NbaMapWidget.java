@@ -1,12 +1,14 @@
 package com.nntk.nba.widgets;
 
 import android.annotation.SuppressLint;
+import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Handler;
 import android.widget.RemoteViews;
 
@@ -28,6 +30,7 @@ import java.util.Objects;
 public class NbaMapWidget extends AppWidgetProvider {
     private static final String LOGO_CLICK = "LOGO_CLICK";
     private static final String MOVIE_CLICK = "MOVIE_CLICK";
+    private static final String ACTION_STOP_MOVIE = "STOP_MOVIE";
 
     private static Map<Integer, String> appMap = new HashMap<>();
 
@@ -85,13 +88,47 @@ public class NbaMapWidget extends AppWidgetProvider {
                     .build());
         }
 
-        TeamEntity teamEntity = teamEntityList.stream().filter(teamEntity1 -> teamEntity1.getTeamName().equals(teamName)).findFirst().get();
-
+        // json 中存的是最后一帧的序号，实际帧数 = 序号 + 1
+        // 找不到球队时用默认帧数兜底，避免 Optional.get() 抛异常导致切不回静态布局
+        TeamEntity teamEntity = teamEntityList.stream().filter(teamEntity1 -> teamEntity1.getTeamName().equals(teamName)).findFirst().orElse(null);
+        int frameSize;
+        if (teamEntity == null) {
+            Logger.w("getPlayTime 未找到球队:%s，使用默认帧数", teamName);
+            frameSize = 150;
+        } else if (type.contains("15")) {
+            frameSize = teamEntity.getMovie2015FrameSize();
+        } else {
+            frameSize = teamEntity.getMovie2016FrameSize();
+        }
 
         if (type.contains("15")) {
-            return teamEntity.getMovie2015FrameSize() * 40;
+            return (frameSize + 1) * 40;
         } else {
-            return teamEntity.getMovie2016FrameSize() * 20;
+            return (frameSize + 1) * 20;
+        }
+    }
+
+
+    /**
+     * 用 AlarmManager 而不是 Handler.postDelayed 安排"切回静态布局"：
+     * 三星等机型的缓存进程冻结(Cached App Freezer)会在广播处理完的几秒内冻结进程，
+     * Handler 的延迟消息不会执行，导致 ViewFlipper 无限循环；Alarm 可以可靠唤醒进程。
+     */
+    @SuppressLint("ScheduleExactAlarm")
+    private void scheduleStopMovie(Context context, String teamName, int appId, long delayMillis) {
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(context, getClass());
+        intent.setAction(ACTION_STOP_MOVIE);
+        intent.putExtra("teamName", teamName);
+        intent.putExtra("appId", appId);
+        // requestCode 用 appId，多个 widget 各自独立，且 FLAG_UPDATE_CURRENT 保证重复播放时旧闹钟被覆盖
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, appId, intent,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_MUTABLE);
+        long triggerAtMillis = System.currentTimeMillis() + delayMillis;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !alarmManager.canScheduleExactAlarms()) {
+            alarmManager.set(AlarmManager.RTC_WAKEUP, triggerAtMillis, pendingIntent);
+        } else {
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, triggerAtMillis, pendingIntent);
         }
     }
 
@@ -111,11 +148,11 @@ public class NbaMapWidget extends AppWidgetProvider {
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
         int[] ids = appWidgetManager.getAppWidgetIds(new ComponentName(context, NbaMapWidget.class));
         for (int i = 0; i < ids.length; i++) {
-            int finalI = i;
-            String teamName = appMap.get(ids[finalI]);
+            // 进程被杀重启后 appMap 会丢，回退到 SP 里保存的球队名
+            String teamName = appMap.get(ids[i]) != null ? appMap.get(ids[i]) : SPStaticUtils.getString("teamName");
             int playTime = getPlayTime(teamName, SPStaticUtils.getString(SettingConst.MOVIE_TYPE));
-            changeMovieLayout(context, appMap.get(ids[finalI]), ids[finalI]);
-            new Handler().postDelayed(() -> changeSimpleLayout(context, appMap.get(ids[finalI]), ids[finalI]), playTime);
+            changeMovieLayout(context, teamName, ids[i]);
+            scheduleStopMovie(context, teamName, ids[i], playTime);
         }
         WidgetNotification.setNextOneMin(context, NbaMapWidget.class);
     }
@@ -138,6 +175,12 @@ public class NbaMapWidget extends AppWidgetProvider {
             return;
         }
 
+        if (Objects.equals(intent.getAction(), ACTION_STOP_MOVIE)) {
+            // 动画播完一轮的定时广播，切回静态布局（多次触发无副作用，幂等）
+            changeSimpleLayout(context, teamName, appId);
+            return;
+        }
+
         if (!Objects.requireNonNull(intent.getAction()).contains("CLICK")) {
             return;
         }
@@ -145,6 +188,10 @@ public class NbaMapWidget extends AppWidgetProvider {
 
         if (Objects.requireNonNull(intent.getAction()).startsWith(LOGO_CLICK)) {
             changeMovieLayout(context, teamName, appId);
+            // ViewFlipper(autoStart) 在 RemoteViews 中会一直循环，
+            // 用 Alarm 在播完一轮(playTime)后切回静态布局，保证只播放一次
+            int playTime = getPlayTime(teamName, SPStaticUtils.getString(SettingConst.MOVIE_TYPE));
+            scheduleStopMovie(context, teamName, appId, playTime);
 
         } else if (Objects.requireNonNull(intent.getAction()).startsWith(MOVIE_CLICK)) {
             changeSimpleLayout(context, teamName, appId);
