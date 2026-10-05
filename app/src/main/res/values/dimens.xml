@@ -7,4 +7,8 @@ http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
     -->
     <dimen name="widget_margin">0dp</dimen>
 
+    <!-- 参考 material-components-android catalog 的 TocFragment：
+         网格列数 = 屏幕宽度 / cat_toc_item_size，夹在 1~4 之间 -->
+    <dimen name="cat_toc_item_size">180dp</dimen>
+
 </resources>

@@ -4,6 +4,7 @@ import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.graphics.drawable.Animatable;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageButton;
@@ -16,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
+import androidx.core.math.MathUtils;
 import androidx.media3.ui.PlayerView;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -48,6 +50,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+
+    // 参考 material-components-android catalog 的 TocFragment
+    private static final int GRID_SPAN_COUNT_MIN = 1;
+    private static final int GRID_SPAN_COUNT_MAX = 4;
 
     private NbaLogoAdapter nbaLogoAdapter;
     private List<TeamEntity> teamEntityList = new ArrayList<>();
@@ -191,10 +197,11 @@ public class MainActivity extends AppCompatActivity {
                     new GridDividerDecoration(
                             ConvertUtils.dp2px(1),
                             ContextCompat.getColor(this, R.color.cat_toc_status_wip_background_color),
-                            2));
+                            calculateGridSpanCount()));
         }
         if (layoutType != 3) {
-            recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+            // 列数按屏幕宽度动态计算(竖屏约2列，横屏/平板最多4列)，与官方 catalog 行为一致
+            recyclerView.setLayoutManager(new GridLayoutManager(this, calculateGridSpanCount()));
         } else {
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
             recyclerView.addItemDecoration(
@@ -225,6 +232,20 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
+    }
+
+
+    /**
+     * 与 material-components-android catalog 的 TocFragment.calculateGridSpanCount 一致：
+     * 列数 = 屏幕宽度像素 / 单元格尺寸(180dp)，最小 1、最大 4。
+     * 竖屏手机约 2 列，横屏或平板宽度足够时最多 4 列。
+     */
+    private int calculateGridSpanCount() {
+        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+        int displayWidth = displayMetrics.widthPixels;
+        int itemSize = getResources().getDimensionPixelSize(R.dimen.cat_toc_item_size);
+        int gridSpanCount = displayWidth / itemSize;
+        return MathUtils.clamp(gridSpanCount, GRID_SPAN_COUNT_MIN, GRID_SPAN_COUNT_MAX);
     }
 
 
